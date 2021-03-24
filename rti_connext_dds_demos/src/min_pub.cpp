@@ -13,14 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Include RTI Connext DDS "modern C++" API
+#include <dds/domain/ddsdomain.hpp>
+#include <dds/domain/find.hpp>
+
 #include <chrono>
 #include <memory>
 
 #include "rclcpp/rclcpp.hpp"
-
-// Include RTI Connext DDS "modern C++" API
-#include <dds/domain/ddsdomain.hpp>
-#include <dds/domain/find.hpp>
 
 using namespace std::chrono_literals;
 
@@ -39,7 +39,7 @@ public:
     participant_ = dds::domain::find(opts.get_domain_id());
     if (dds::core::null == participant_) {
       throw new std::runtime_error(
-        "failed to look up DomainParticipant. Is the application using rmw_connextdds?");
+              "failed to look up DomainParticipant. Is the application using rmw_connextdds?");
     }
 
     timer_ = this->create_wall_timer(
@@ -48,9 +48,7 @@ public:
 
 private:
   void timer_callback()
-  {
-    
-  }
+  {}
   rclcpp::TimerBase::SharedPtr timer_;
   size_t count_;
   dds::domain::DomainParticipant participant_;
