@@ -30,7 +30,8 @@ class MinimalSubscriber : public rclcpp::Node
     : Node("minimal_subscriber"),
       participant_(dds::core::null)
     {
-      participant_ = dds::domain::find(0);
+      auto opts = rclcpp::contexts::get_global_default_context()->get_init_options();
+      participant_ = dds::domain::find(opts.get_domain_id());
       if (dds::core::null == participant_) {
         throw new std::runtime_error(
           "failed to look up DomainParticipant. Is the application using rmw_connextdds?");
