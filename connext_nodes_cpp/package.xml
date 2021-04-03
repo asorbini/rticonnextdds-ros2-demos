@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>rti_connext_dds_demos</name>
+  <name>connext_nodes_cpp</name>
   <version>0.1.0</version>
-  <description>Example ROS2 applications using RTI Connext DDS</description>
+  <description>ROS 2 Nodes using RTI Connext DDS' Modern C++ API</description>
   <maintainer email="asorbini@rti.com">Andrea Sorbini</maintainer>
   <maintainer email="neil@rti.com">Neil Puthuff</maintainer>
   <license>Apache License 2.0</license>
@@ -11,7 +11,18 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>rclcpp</depend>
+  
   <depend>std_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>sensor_msgs</depend>
+
+  <!-- Used to load the same RTI Connext DDS installation as rmw_connextdds -->
+  <depend>rti_connext_dds_cmake_module</depend>
+
+  <!-- The RMW implementation is not linked by applications during build, but
+       they must be run with rmw_connextdds because they expect to share the
+       DDS DomainParticipant with the RMW. -->
+  <depend>rmw_connextdds</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
