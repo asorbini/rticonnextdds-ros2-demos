@@ -26,9 +26,7 @@
 
 using std::placeholders::_1;
 
-class MinimalSubscriber :
-  public ParticipantFinalizer,
-  public rclcpp::Node,
+class MinimalSubscriber : public rclcpp::Node,
   public dds::sub::NoOpDataReaderListener<std_msgs::msg::String>
 {
 public:
