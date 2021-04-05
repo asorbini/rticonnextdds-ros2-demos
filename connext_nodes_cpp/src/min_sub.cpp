@@ -34,15 +34,14 @@ public:
   : Node("minimal_subscriber")
   {
     // The DomainParticipant is created on domain 0 by default
-    auto rmw_participant = dds::domain::find(0);
-    if (dds::core::null == rmw_participant) {
+    participant_ = dds::domain::find(0);
+    if (dds::core::null == participant_) {
       RCLCPP_ERROR(this->get_logger(), "failed to look up DomainParticipant. "
         "Is the application running on rmw_connextdds?\n");
       throw new std::runtime_error("failed to look up DomainParticipant");
     }
 
     // Create a DataReader for topic "rt/chatter"
-    participant_ = dds::domain::DomainParticipant(0);
     subscriber_ = dds::sub::Subscriber(participant_);
     topic_ = dds::topic::Topic<std_msgs::msg::String>(participant_,
       "rt/chatter", "std_msgs::msg::dds_::String_");
@@ -50,9 +49,6 @@ public:
     reader_qos << dds::core::policy::Reliability::Reliable();
     reader_ = dds::sub::DataReader<std_msgs::msg::String>(
       subscriber_, topic_, reader_qos, this, dds::core::status::StatusMask::all());
-    
-    participant_.enable();
-    dds::domain::ignore(participant_, rmw_participant.instance_handle());
   }
   void on_data_available(dds::sub::DataReader<std_msgs::msg::String> &reader)
   {

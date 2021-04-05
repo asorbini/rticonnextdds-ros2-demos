@@ -39,22 +39,23 @@ public:
     count_(0)
   {
     // The DomainParticipant is created on domain 0 by default
-    auto rmw_participant = dds::domain::find(0);
-    if (dds::core::null == rmw_participant) {
+    auto participant_ = dds::domain::find(0);
+    if (dds::core::null == participant_) {
       RCLCPP_ERROR(this->get_logger(), "failed to look up DomainParticipant. "
         "Is the application running on rmw_connextdds?\n");
       throw new std::runtime_error("failed to look up DomainParticipant");
     }
 
     // Create a DataWriter for topic "rt/chatter"
-    participant_ = dds::domain::DomainParticipant(0);
     publisher_ = dds::pub::Publisher(participant_);
     topic_ = dds::topic::Topic<std_msgs::msg::String>(participant_,
       "rt/chatter", "std_msgs::msg::dds_::String_");
-    writer_ = dds::pub::DataWriter<std_msgs::msg::String>(publisher_, topic_);
-    
-    participant_.enable();
-    dds::domain::ignore(participant_, rmw_participant.instance_handle());
+    rti::core::policy::Property props;
+    props.set({"dds.data_writer.history.memory_manager.fast_pool.pool_buffer_max_size", "1024"}, false);
+    dds::pub::qos::DataWriterQos writer_qos; 
+    writer_qos << props;
+    writer_ = dds::pub::DataWriter<std_msgs::msg::String>(
+        publisher_, topic_, writer_qos, nullptr, dds::core::status::StatusMask::none());
 
     // Create a timer to publish data periodically
     timer_ = this->create_wall_timer(
