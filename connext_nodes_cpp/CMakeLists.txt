@@ -42,7 +42,7 @@ find_package(std_msgs REQUIRED)
 # installation and the exact same architecture as `rmw_connextdds`.
 # This is required for things to work properly.
 find_package(rti_connext_dds_cmake_module REQUIRED)
-
+list(INSERT CMAKE_MODULE_PATH 0 "${CONNEXTDDS_DIR}/resource/cmake")
 message(STATUS "loading RTI Connext DDS with `rti_connext_cmake_module`")
 find_package(RTIConnextDDS REQUIRED)
 if(NOT RTIConnextDDS_FOUND)
@@ -62,18 +62,33 @@ set(ROOT_IDL_DIR    ${std_msgs_DIR}/../../)
 set(BUILD_IDL_DIR   ${CMAKE_CURRENT_BINARY_DIR}/rtiddsgen)
 
 # Helper function to build an example application
-# Usage: build_exec(<executable_name> <source_files>)
-function(build_exec exec)
-  add_executable(${exec} ${ARGN})
-  ament_target_dependencies(${exec} rclcpp)
+# Usage: build_exec(NAME <executable_name> SOURCES <source_files> LIBRARIES <libs>)
+function(build_exec)
+  cmake_parse_arguments(_exec
+    "" # boolean arguments
+    "NAME" # single value arguments
+    "SOURCES;LIBRARIES;DEFINES" # multi-value arguments
+    ${ARGN} # current function arguments
+  )
+
+  add_executable(${_exec_NAME} ${_exec_SOURCES})
+  ament_target_dependencies(${_exec_NAME} rclcpp)
   # Link RTI Connext DDS' "modern C++" API
-  target_link_libraries(${exec} RTIConnextDDS::cpp2_api)
+  target_link_libraries(${_exec_NAME}
+    RTIConnextDDS::cpp2_api ${_exec_LIBRARIES})
   # Set property ENABLE_EXPORTS to link the library with `-rdynamic` and
   # enable sharing of static variables with dynamic libraries.
-  set_target_properties(${exec} PROPERTIES ENABLE_EXPORTS true)
-  target_include_directories(${exec} PRIVATE ${BUILD_IDL_DIR})
+  set_target_properties(${_exec_NAME} PROPERTIES ENABLE_EXPORTS true)
+  target_include_directories(${_exec_NAME}
+    PRIVATE
+      ${BUILD_IDL_DIR}
+      "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+      "$<INSTALL_INTERFACE:include>")
+  if(_exec_DEFINES)
+    target_compile_definitions(${_exec_NAME} PRIVATE ${_exec_DEFINES})
+  endif()
   install(
-    TARGETS ${exec}
+    TARGETS ${_exec_NAME}
     EXPORT export_${PROJECT_NAME}
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
@@ -110,9 +125,46 @@ endfunction()
 # Generate type support for std_msgs::msg::String
 idl_generate(${std_msgs_IDL_DIR}/String.idl String_IDL_FILES)
 
+# Build a library with all type supports
+set(types_lib connext_nodes_cpp_types)
+add_library(${types_lib} SHARED ${String_IDL_FILES})
+target_link_libraries(${types_lib} RTIConnextDDS::cpp2_api)
+install(
+  TARGETS ${types_lib}
+  EXPORT export_${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
 # Build example applications
-build_exec(pub src/min_pub.cpp ${String_IDL_FILES})
-build_exec(sub src/min_sub.cpp ${String_IDL_FILES})
+build_exec(
+  NAME pub
+  SOURCES src/min_pub.cpp
+  LIBRARIES ${types_lib})
+build_exec(
+  NAME sub
+  SOURCES src/min_sub.cpp
+  LIBRARIES ${types_lib})
+
+set(processor_chatter_src
+  src/processor/processor_chatter.cpp
+  include/connext_nodes/processor.hpp
+  include/connext_nodes/processor_chatter.hpp)
+build_exec(
+  NAME processor_chatter_ros
+  SOURCES
+    ${processor_chatter_src}
+    include/connext_nodes/processor_chatter_ros.hpp
+  LIBRARIES ${types_lib}
+  DEFINES CHATTER_USE_DDS=0)
+build_exec(
+  NAME processor_chatter_dds
+  SOURCES
+    ${processor_chatter_src}
+    include/connext_nodes/processor_chatter_dds.hpp
+  LIBRARIES ${types_lib}
+  DEFINES CHATTER_USE_DDS=1)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
