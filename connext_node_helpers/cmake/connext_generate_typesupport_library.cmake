@@ -16,7 +16,7 @@ function(connext_generate_typesupport_library lib)
   cmake_parse_arguments(_tslib
     "" # boolean arguments
     "INSTALL_PREFIX" # single value arguments
-    "MESSAGES;SERVICES;DEPENDS" # multi-value arguments
+    "MESSAGES;SERVICES;DEPENDS;IDLS" # multi-value arguments
     ${ARGN} # current function arguments
     )
   
@@ -53,6 +53,54 @@ function(connext_generate_typesupport_library lib)
       INSTALL_PREFIX ${_tslib_INSTALL_PREFIX}
       DEPENDS ${_tslib_DEPENDS})
     list(APPEND _tslib_GENERATED_FILES ${${_msg_pkg}_${_msg_name}_FILES})
+  endforeach()
+
+
+  # Generate a list of include paths based on the input IDL files
+  set(_idl_includes)
+  foreach(_idl_ENTRY ${_tslib_IDLS})
+    string(REGEX REPLACE "@.*$" "" _idl_PATH "${_idl_ENTRY}")
+    string(REGEX REPLACE "^${_idl_PATH}" "" _idl_PREFIX "${_idl_ENTRY}")
+    if(NOT "${_idl_PREFIX}" STREQUAL "")
+      string(REGEX REPLACE "^@" "" _idl_PREFIX "${_idl_PREFIX}")
+    endif()
+
+    if(NOT "${_id_PREFIX}" STREQUAL "")
+      get_filename_component(_idl_file "${_idl_PATH}" NAME)
+      string(REGEX REPLACE
+        "${_idl_PREFIX}/${_idl_file}$" "" _idl_inc_dir "${idl_PATH}")
+    else()
+      get_filename_component(_idl_inc_dir "${_idl_PATH}" DIRECTORY)
+    endif()
+
+    list(APPEND _idl_includes "${_idl_inc_dir}")
+  endforeach()
+  
+  # Generate type support for all IDL Files
+  # These are passed in the form <idl-file>[@<optional-include-prefix>]
+  foreach(_idl_ENTRY ${_tslib_IDLS})
+    string(REGEX REPLACE "@.*$" "" _idl_PATH "${_idl_ENTRY}")
+    string(REGEX REPLACE "^${_idl_PATH}" "" _idl_PREFIX "${_idl_ENTRY}")
+    if(NOT "${_idl_PREFIX}" STREQUAL "")
+      string(REGEX REPLACE "^@" "" _idl_PREFIX "${_idl_PREFIX}")
+    endif()
+    get_filename_component(_idl_file "${_idl_PATH}" NAME)
+    string(REGEX REPLACE "[.]idl$" "" _idl_type "${_idl_file}")
+
+    connext_generate_message_typesupport_cpp(${_idl_PATH}
+      PACKAGE ${_idl_PREFIX}
+      INCLUDES ${_idl_includes}
+      OUTPUT_DIR ${_tslib_OUTPUT_DIR}
+      INSTALL_PREFIX ${_tslib_INSTALL_PREFIX}
+      DEPENDS ${_tslib_DEPENDS})
+    
+    if(NOT "${_idl_PREFIX}" STREQUAL "")
+      string(REPLACE "/" "_" _idl_prefix "${_idl_PREFIX}")
+      set(_outvar "${_idl_prefix}_${_idl_type}_FILES")
+    else()
+      set(_outvar "${_idl_type}_FILES")
+    endif()
+    list(APPEND _tslib_GENERATED_FILES ${${_outvar}})
   endforeach()
 
   # Define library target to build all generated files into shared library

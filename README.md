@@ -196,7 +196,7 @@ want to use RTI Connext DDS.
 #### connext_generate_typesupport_library
 
 Generates a shared library containing DDS type support code from a list of ROS 2
-messages and (soon) services.
+messages and (soon) services, but also regular Connext IDL files.
 
 This function takes a list of ROS 2 types and will generate a shared library
 after defining appropriate code generation targets for each type using
@@ -216,7 +216,10 @@ connext_generate_typesupport_library(my_connext_types_lib
     std_msgs/Header
     builtin_interfaces/Time
     sensor_msgs/PointField
-    sensor_msgs/PointCloud2)
+    sensor_msgs/PointCloud2
+  IDLS
+    idl/my/custom/ns/MyType.idl@my/custom/ns
+    id/SomeTypesWithoutNamespace.idl)
 ```
 
 #### connext_generate_message_typesupport_cpp
