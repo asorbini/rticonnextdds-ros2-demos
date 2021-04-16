@@ -60,7 +60,7 @@ connext_generate_typesupport_library(connext_nodes_cpp_types
     sensor_msgs/PointCloud2
   IDLS
     idl/rti/flat_data/CameraImage.idl@rti/flat_data
-    idl/rti/shapes/ShapeType.idl@rti/shapes)
+    idl/ShapeType.idl)
 
 ################################################################################
 # Build example stand-alone applications

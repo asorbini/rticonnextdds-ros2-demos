@@ -100,6 +100,7 @@ function(connext_generate_typesupport_library lib)
     else()
       set(_outvar "${_idl_type}_FILES")
     endif()
+
     list(APPEND _tslib_GENERATED_FILES ${${_outvar}})
   endforeach()
 

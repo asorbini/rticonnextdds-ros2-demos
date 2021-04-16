@@ -219,7 +219,7 @@ connext_generate_typesupport_library(my_connext_types_lib
     sensor_msgs/PointCloud2
   IDLS
     idl/my/custom/ns/MyType.idl@my/custom/ns
-    id/SomeTypesWithoutNamespace.idl)
+    idl/SomeTypesWithoutNamespace.idl)
 ```
 
 #### connext_generate_message_typesupport_cpp
@@ -243,13 +243,30 @@ must always be included as `#include "<pkg>/<type>.idl"`).
 
 ```cmake
 find_package(connext_node_helpers REQUIRED)
-find_package(std_msgs REQUIRED)
 
+# Generate type support for type `std_msgs::msg::String`.
+# The list of generated files will be stored as `${std_msgs_String_FILES}`.
+# When using this syntax, the first argument is the "base name" of the type
+# and the PACKAGE argument must always be specified to qualify the type.
+find_package(std_msgs REQUIRED)
 connext_generate_message_typesupport_cpp(String PACKAGE std_msgs)
+
+# Generate type support from a typical IDL file for Connext.
+# In this case, the input is the path to the input file, and the
+# PACKAGE argument can be used to specify an optional "include prefix".
+
+# Generated files will be available as `${my_custom_ns_MyType_FILES}`
+connext_generate_message_typesupport_cpp(idl/my/custom/ns/MyType.idl
+  PACKAGE my/custom/ns)
+
+# Generated files will be available as `${SomeTypesWithoutNamespace_FILES}`
+connext_generate_message_typesupport_cpp(idl/SomeTypesWithoutNamespace.idl)
 
 add_executable(my_app
   main.c
-  ${std_msgs_String_FILES})
+  ${std_msgs_String_FILES}
+  ${my_custom_ns_MyType_FILES}
+  ${SomeTypesWithoutNamespace_FILES})
 
 target_include_directories(my_app
   PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/rtiddsgen)

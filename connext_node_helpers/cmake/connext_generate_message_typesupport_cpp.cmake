@@ -143,7 +143,7 @@ macro(_connext_generate_message_typesupport_cpp_dds)
     string(REPLACE "/" "_" _idl_package "${_idl_PACKAGE}")
     set(_idl_OUTPUT_VAR ${_idl_package}_${type}_FILES)
   else()
-    set(_idl_OUTPUT_VAR _${type}_FILES)
+    set(_idl_OUTPUT_VAR ${type}_FILES)
   endif()
 
   _connext_generate_message_typesupport_cpp_impl()
