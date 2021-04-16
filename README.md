@@ -5,8 +5,7 @@
 All example application require RTI Connext DDS 6.x and can only be run using
 [`rmw_connextdds`](https://github.com/ros2/rmw_connextdds).
 
-Once RTI Connext DDS 6.x has been installed on the build host, build `rmw_connextdds`
-in a dedicated workspace:
+Once RTI Connext DDS 6.x is installed, build `rmw_connextdds` in a dedicated workspace:
 
 ```sh
 # Load your ROS installation, e.g. Foxy.
