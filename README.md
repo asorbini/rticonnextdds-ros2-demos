@@ -7,8 +7,8 @@ the implementation of this type of ROS 2 applications (`connext_node_helpers`).
 - [Build dependencies](#build-dependencies)
 - [Build examples](#build-examples)
 - [Run examples](#run-examples)
-- [connext_nodes_cpp](#connext_nodes_cpp)
-- [connext_node_helpers](#connext_node_helpers)
+- [Package `connext_nodes_cpp`](#package-connext_nodes_cpp)
+- [Package `connext_node_helpers`](#package-connext_node_helpers)
   - [CMake Helpers](#cmake-helpers)
     - [connext_generate_typesupport_library](#connext_generate_typesupport_library)
     - [connext_generate_message_typesupport_cpp](#connext_generate_message_typesupport_cpp)
@@ -99,11 +99,11 @@ ros2 run connext_nodes_cpp listener
 ./ws-connext-demos/install/connext_nodes_cpp/bin/talker_main
 ```
 
-## connext_nodes_cpp
+## Package `connext_nodes_cpp`
 
 This package contains several example ROS 2/Connext hybrid applications.
 
-## connext_node_helpers
+## Package `connext_node_helpers`
 
 This package provides CMake and C++ helpers to facilitate the implementation of
 ROS 2 packages based on RTI Connext DDS.
