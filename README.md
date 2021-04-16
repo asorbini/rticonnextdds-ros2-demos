@@ -1,5 +1,20 @@
 # Example ROS2 Applications using RTI Connext DDS
 
+This repository contains a collection of example "hybrid" ROS 2/Connext
+applications (`connext_cpp_nodes`), and some helper resources to simplify
+the implementation of this type of ROS 2 applications (`connext_node_helpers`).
+
+- [Build dependencies](#build-dependencies)
+- [Build examples](#build-examples)
+- [Run examples](#run-examples)
+- [connext_nodes_cpp](#connext_nodes_cpp)
+- [connext_node_helpers](#connext_node_helpers)
+  - [CMake Helpers](#cmake-helpers)
+    - [connext_generate_typesupport_library](#connext_generate_typesupport_library)
+    - [connext_generate_message_typesupport_cpp](#connext_generate_message_typesupport_cpp)
+    - [connext_components_register_node](#connext_components_register_node)
+    - [connext_add_executable](#connext_add_executable)
+
 ## Build dependencies
 
 All example application require RTI Connext DDS 6.x and can only be run using
@@ -22,7 +37,7 @@ mkdir -p ws-connext-demos-rmw/src/ros2
 cd ws-connext-demos-rmw
 
 # Clone and build rmw_connextdds (use `-b <branch>` to clone a branch for a
-# specific release, or leave out to target Rolling)
+# specific release, or leave it out to target Rolling)
 git clone -b foxy https://github.com/ros2/rmw_connextdds src/ros2/rmw_connextdds
 
 # If you have multiple target libraries installed you might need to select the
