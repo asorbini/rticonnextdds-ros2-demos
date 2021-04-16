@@ -13,7 +13,9 @@
 # limitations under the License.
 
 ################################################################################
-# Similar to `rclcpp_components_register_node()` but links Connext DDS directly
+# Similar to `rclcpp_components_register_node()` but generates a main() which
+# links Connext DDS directly, and which is linked with `-rdynamic` to enable
+# sharing of the DomainParticipantFactory and other entities with the RMW.
 ################################################################################
 function(connext_components_register_node target)
   cmake_parse_arguments(_component
@@ -38,9 +40,8 @@ function(connext_components_register_node target)
 endfunction()
 
 ################################################################################
-# Helper function define a custom to generate type support code with rtiddsgen
-# from a given IDL file. The function returns the list of generated files as a
-# variable in the caller's scope so that it may be passed to add_executable().
+# Helper function to generate type support code with rtiddsgen from a ROS 2
+# message definition, specified as <pkg>/<msg>.
 ################################################################################
 function(connext_generate_message_typesupport_cpp type)
   cmake_parse_arguments(_idl
@@ -121,10 +122,9 @@ function(connext_generate_message_typesupport_cpp type)
     DESTINATION "${_idl_INSTALL_PREFIX}/${_idl_NS}")
 endfunction()
 
-
 ################################################################################
-# Helper function to generate a shared library containing type support code
-# generated with rtiddsgen from ROS 2 .idl files
+# Helper function to generate a shared library containing DDS type support code
+# from a list of ROS 2 messages and (soon) services.
 ################################################################################
 function(connext_generate_typesupport_library lib)
   cmake_parse_arguments(_tslib
@@ -188,7 +188,6 @@ endfunction()
 
 ################################################################################
 # Helper function to build simple C++ DDS/ROS 2 applications
-# Usage: build_exec(NAME <executable_name> SOURCES <source_files> LIBRARIES <libs>)
 ################################################################################
 function(connext_add_executable)
   cmake_parse_arguments(_exec
