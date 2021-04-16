@@ -1,26 +1,93 @@
 # Example ROS2 Applications using RTI Connext DDS
 
+## Build dependencies
 
-## connext_nodes_cpp
+All example application require RTI Connext DDS 6.x and can only be run using
+[`rmw_connextdds`](https://github.com/ros2/rmw_connextdds).
 
-This package contains several example ROS 2/Connext hybrid applications.
+Once RTI Connext DDS 6.x has been installed on the build host, build `rmw_connextdds`
+in a dedicated workspace:
 
-### Run examples
+```sh
+# Load your ROS installation, e.g. Foxy.
+source /opt/ros/foxy/setup.bash
+
+# Load RTI Connext DDS 6.x
+# Replace <NDDSHOME> with your installation path, e.g. ${HOME}/rti_connext_dds-6.0.1
+# Replace <ARCH> with the name of the installed target libraries, e.g. x64Linux4gcc7.3.0
+source <NDDSHOME>/resource/scripts/rtisetenv_<ARCH>.bash
+
+# Create a workspace to build the RMW and enter it
+mkdir -p ws-connext-demos-rmw/src/ros2
+
+cd ws-connext-demos-rmw
+
+# Clone and build rmw_connextdds (use `-b <branch>` to clone a branch for a
+# specific release, or leave out to target Rolling)
+git clone -b foxy https://github.com/ros2/rmw_connextdds src/ros2/rmw_connextdds
+
+# If you have multiple target libraries installed you might need to select the
+# desired one with `--cmake-args -DCONNEXTDDS_ARCH=<ARCH>`
+colcon build --symlink-install
+```
+
+If your installation contains a binary version of `rmw_connextdds` built with
+Connext 5.3.1, you should `unset` variables `CONNEXTDDS_DIR`, `CONNEXTDDS_ARCH`,
+and `NDDSHOME` before loading the Connext 6.x installation, to make sure that
+the older version will not be picked up by `colcon build`, e.g. if using a 
+binary Rolling installation with `rmw_connextdds` already installed:
+
+```sh
+source /opt/ros/rolling/setup.bash
+
+unset CONNEXTDDS_DIR \
+      CONNEXTDDS_ARCH \
+      NDDSHOME
+
+source <NDDSHOME>/resource/scripts/rtisetenv_<ARCH>.bash
+
+...
+```
+
+## Build examples
+
+After `rmw_connextdds` has been built with RTI Connext DDS 6.x, load it in the
+environment, and build the examples repository:
+
+```sh
+source ws-connext-demos-rmw/install/setup.bash
+
+mkdir -p ws-connext-demos/src/rti
+
+cd ws-connext-demos
+
+git clone https://github.com/asorbini/rticonnextdds-ros2-demos src/rti/rticonnextdds-ros2-demos
+
+colcon build --symlink-install
+```
+
+## Run examples
 
 Some examples are built as stand-alone executable, which must be run directly,
 while a few examples are provided in the form of registered components that
 can be run with `ros2 run`. Regardless, all examples must be run with
-`rmw_connextdds`:
+`rmw_connextdds` as the RMW implementation:
 
 ```sh
-export RMW_IMPLEMENTATION=rmw_connextdds
+source ws-connext-demos/install/setup.bash
 
-# Run a stand-alone example
-./install/connext_nodes_cpp/bin/talker_main
+export RMW_IMPLEMENTATION=rmw_connextdds
 
 # Run a component-ized example
 ros2 run connext_nodes_cpp listener
+
+# Run a stand-alone example
+./ws-connext-demos/install/connext_nodes_cpp/bin/talker_main
 ```
+
+## connext_nodes_cpp
+
+This package contains several example ROS 2/Connext hybrid applications.
 
 ## connext_node_helpers
 
