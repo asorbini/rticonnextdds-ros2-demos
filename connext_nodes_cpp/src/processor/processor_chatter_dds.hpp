@@ -12,13 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef CONNEXT_NODES_CPP__PROCESSOR_CHATTER_DDS_HPP
-#define CONNEXT_NODES_CPP__PROCESSOR_CHATTER_DDS_HPP
+#ifndef PROCESSOR_CHATTER_DDS_HPP
+#define PROCESSOR_CHATTER_DDS_HPP
 
-#include "connext_nodes/processor.hpp"
-#include "connext_nodes/processor_chatter.hpp"
+#include "connext_node_helpers/processor.hpp"
 
-#include "String.hpp"
+#include "processor_chatter.hpp"
+
+#include "std_msgs/msg/String.hpp"
+
+namespace rti { namespace connext_nodes_cpp {
 
 /******************************************************************************
  * DDS Node interface
@@ -54,4 +57,7 @@ protected:
   ChatterProcessor processor_;
 };
 
-#endif  // CONNEXT_NODES_CPP__PROCESSOR_CHATTER_DDS_HPP
+}  // namespace connext_nodes_cpp
+}  // namespace rti
+
+#endif  // PROCESSOR_CHATTER_DDS_HPP

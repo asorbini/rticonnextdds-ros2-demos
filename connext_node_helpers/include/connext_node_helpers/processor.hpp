@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef CONNEXT_NODES_CPP__PROCESSOR_HPP
-#define CONNEXT_NODES_CPP__PROCESSOR_HPP
+#ifndef CONNEXT_NODE_HELPERS__PROCESSOR_HPP
+#define CONNEXT_NODE_HELPERS__PROCESSOR_HPP
 
 #include "rclcpp/rclcpp.hpp"
 
@@ -27,9 +27,9 @@ class BaseProcessorNode : public rclcpp::Node
 {
 public:
   BaseProcessorNode(
-    const char * const node_name,
-    const char * const topic_in,
-    const char * const topic_out)
+    const std::string & node_name,
+    const std::string & topic_in,
+    const std::string & topic_out)
   : Node(node_name),
     topic_in_(topic_in),
     topic_out_(topic_out)
@@ -67,11 +67,11 @@ class DdsProcessorNode : public BaseProcessorNode<T,V>
 {
 public:
   DdsProcessorNode(
-    const char * const node_name,
-    const char * const topic_in,
-    const char * const type_in,
-    const char * const topic_out,
-    const char * const type_out,
+    const std::string & node_name,
+    const std::string & topic_in,
+    const std::string & type_in,
+    const std::string & topic_out,
+    const std::string & type_out,
     const int32_t domain_id = 0,
     const int32_t history_depth = 10,
     const size_t prealloc_max = 1024,
@@ -251,9 +251,9 @@ class Ros2ProcessorNode : public BaseProcessorNode<T,V>
 {
 public:
   Ros2ProcessorNode(
-    const char * const node_name,
-    const char * const topic_in,
-    const char * const topic_out,
+    const std::string & node_name,
+    const std::string & topic_in,
+    const std::string & topic_out,
     const int32_t history_depth = 10)
   : BaseProcessorNode<T,V>(node_name, topic_in, topic_out),
     history_depth_(history_depth)
@@ -274,7 +274,9 @@ protected:
   typename rclcpp::Publisher<V>::SharedPtr pub_;
 };
 
+void foo();
+
 }  // namespace ros2
 }  // namespace rti
 
-#endif /* CONNEXT_NODES_CPP__PROCESSOR_HPP */
+#endif /* CONNEXT_NODE_HELPERS__PROCESSOR_HPP */

@@ -12,13 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef CONNEXT_NODES_CPP__PROCESSOR_CHATTER_ROS_HPP
-#define CONNEXT_NODES_CPP__PROCESSOR_CHATTER_ROS_HPP
+#ifndef PROCESSOR_CHATTER_ROS_HPP
+#define PROCESSOR_CHATTER_ROS_HPP
 
-#include "connext_nodes/processor.hpp"
-#include "connext_nodes/processor_chatter.hpp"
+#include "connext_node_helpers/processor.hpp"
+
+#include "processor_chatter.hpp"
 
 #include "std_msgs/msg/string.hpp"
+
+namespace rti { namespace connext_nodes_cpp {
 
 /******************************************************************************
  * Traditional ROS 2 Node
@@ -71,5 +74,8 @@ protected:
   std::unique_ptr<std_msgs::msg::String> output_msg_;
   ChatterProcessor processor_;
 };
+
+}  // namespace connext_nodes_cpp
+}  // namespace rti
 
 #endif  // CONNEXT_NODES_CPP__PROCESSOR_CHATTER_ROS_HPP

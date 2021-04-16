@@ -1,4 +1,4 @@
-// Copyright 2021 Real-Time Innovations, Inc.
+// (c) 2021 Copyright, Real-Time Innovations, Inc. (RTI)
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,18 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#if USE_DDS
-#include "processor_chatter_dds.hpp"
-#define NODE_CLASS      rti::connext_nodes_cpp::DdsChatterProcessorNode
-#else
-#include "processor_chatter_ros.hpp"
-#define NODE_CLASS      rti::connext_nodes_cpp::Ros2ChatterProcessorNode
-#endif  // USE_DDS
 
-int main(int argc, char * argv[])
-{
-  rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<NODE_CLASS>());
-  rclcpp::shutdown();
-  return 0;
+#include "connext_node_helpers/processor.hpp"
+
+void foo() {
+  printf("Hello processor library\n");
 }

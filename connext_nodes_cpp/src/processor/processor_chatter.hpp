@@ -12,13 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef CONNEXT_NODES_CPP__PROCESSOR_CHATTER_HPP
-#define CONNEXT_NODES_CPP__PROCESSOR_CHATTER_HPP
+#ifndef PROCESSOR_CHATTER_HPP
+#define PROCESSOR_CHATTER_HPP
 
 #include <string>
 
 #define CHATTER_TOPIC_IN        "chatter"
 #define CHATTER_TOPIC_OUT       "chatter/processed"
+
+namespace rti { namespace connext_nodes_cpp {
 
 /******************************************************************************
  * Shared "processor" logic
@@ -38,4 +40,7 @@ private:
   uint64_t received_count_{0};
 };
 
-#endif  // CONNEXT_NODES_CPP__PROCESSOR_CHATTER_HPP
+}  // namespace connext_nodes_cpp
+}  // namespace rti
+
+#endif  // PROCESSOR_CHATTER_HPP
