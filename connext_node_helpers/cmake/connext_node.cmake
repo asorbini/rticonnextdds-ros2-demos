@@ -41,7 +41,7 @@ endfunction()
 
 ################################################################################
 # Helper function to generate type support code with rtiddsgen from a ROS 2
-# message definition, specified as <pkg>/<msg>.
+# message definition.
 ################################################################################
 function(connext_generate_message_typesupport_cpp type)
   cmake_parse_arguments(_idl
