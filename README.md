@@ -1,13 +1,16 @@
 # Example ROS2 Applications using RTI Connext DDS
 
-This repository contains a collection of example "hybrid" ROS 2/Connext
-applications (`connext_cpp_nodes`), and some helper resources to simplify
-the implementation of this type of ROS 2 applications (`connext_node_helpers`).
+This repository contains a collection of example ROS 2/Connext hybrid applications
+(`connext_cpp_nodes`), and some helper resources to simplify the implementation of
+this class of ROS 2 applications (`connext_node_helpers`).
 
 - [Build dependencies](#build-dependencies)
 - [Build examples](#build-examples)
 - [Run examples](#run-examples)
 - [Package `connext_nodes_cpp`](#package-connext_nodes_cpp)
+  - [Included Examples](#included-examples)
+    - [talker/listener](#talkerlistener)
+    - [processor_chatter](#processor_chatter)
 - [Package `connext_node_helpers`](#package-connext_node_helpers)
   - [CMake Helpers](#cmake-helpers)
     - [connext_generate_typesupport_library](#connext_generate_typesupport_library)
@@ -102,6 +105,32 @@ ros2 run connext_nodes_cpp listener
 ## Package `connext_nodes_cpp`
 
 This package contains several example ROS 2/Connext hybrid applications.
+
+### Included Examples
+
+Most examples are available both as a stand-alone executable and as an `rclcpp`
+component. When built as a stand-alone executable, the generated binary will
+use the `_main` suffix to differentiate it from the "component-ized" version.
+
+#### talker/listener
+
+These examples mimic the `talker` and `listener` applications included in package
+`demo_nodes_cpp`, but they use the RTI Connext DDS C++11 API to create DDS endpoint
+that can interoperate over the ROS 2 topic `"chatter"`.
+
+The endpoints are created reusing the type definition of `std_msgs::msg::String``
+automatically converted from ROS IDL to OMG IDL by the ROS 2 build process.
+
+#### processor_chatter
+
+This example uses the interfaces offered by `connext_nodes/processor.hpp` to
+implement a simple "processor" node which consumes messages from topic `"chatter"`,
+manipulates the message, and distributes the result over another topic.
+
+The message processing logic is implemented in a "middleware-agnostic" fashion,
+and thank to the available node templates, two executables are available: one
+which runs a DDS-based version of the node, and one which uses "classic" ROS 2
+facilities.
 
 ## Package `connext_node_helpers`
 
