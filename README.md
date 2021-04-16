@@ -122,16 +122,35 @@ that can interoperate over the ROS 2 topic `"chatter"`.
 The endpoints are created reusing the type definition of `std_msgs::msg::String``
 automatically converted from ROS IDL to OMG IDL by the ROS 2 build process.
 
+| Example | Description   |
+|---------|---------------|
+|[talker.cpp](connext_nodes_cpp/src/components/talker.cpp)| Connext-based version of [demo_nodes_cpp/src/topics/talker.cpp](https://github.com/ros2/demos/blob/master/demo_nodes_cpp/src/topics/talker.cpp)|
+|[listener.cpp](connext_nodes_cpp/src/components/listener.cpp)| Connext-based version of [demo_nodes_cpp/src/topics/listener.cpp](https://github.com/ros2/demos/blob/master/demo_nodes_cpp/src/topics/listener.cpp)|
+|[talker_main.cpp](connext_nodes_cpp/src/standalone/talker_main.cpp)| Stand-alone version of [talker.cpp](connext_nodes_cpp/src/components/talker.cpp)|
+|[listener_main.cpp](connext_nodes_cpp/src/standalone/listener_main.cpp)| Stand-alone version of [listener.cpp](connext_nodes_cpp/src/components/listener.cpp)|
+
 #### processor_chatter
 
-This example uses the interfaces offered by `connext_nodes/processor.hpp` to
-implement a simple "processor" node which consumes messages from topic `"chatter"`,
-manipulates the message, and distributes the result over another topic.
+This example uses the interfaces offered by [connext_nodes/processor.hpp](connext_node_helpers/include/connext_nodes/processor.hpp)
+to implement a simple "processor" node for topic `"chatter"`. A "processor" in this context
+is a type of node which consumes messages from topic an input topic,
+manipulates them, and redistributes the results over an output topic.
 
 The message processing logic is implemented in a "middleware-agnostic" fashion,
-and thank to the available node templates, two executables are available: one
-which runs a DDS-based version of the node, and one which uses "classic" ROS 2
-facilities.
+so that it may be encapsulated in a class which doesn't directly depend on neither
+the ROS 2 nor the RTI Connext DDS APIs (except for their respective data bindings).
+Thanks to the available node templates, two executables are built from the same
+`main()`: one which runs a DDS-based version of the node (implemented by deriving
+from template class `rti::ros2::DdsProcessorNode`), and one which uses
+"classic" ROS 2 APIs (implemented by deriving from template class `rti::ros2::RosProcessorNode`).
+
+| Example | Description   |
+|---------|---------------|
+|[processor_chatter_dds.hpp](connext_nodes_cpp/src/processor/processor_chatter_dds.hpp)|Instantiation of `rti::ros2::DdsProcessorNode<std_msgs::msg::String, std_msgs::msg::String>` for topics `"chatter"`/`"chatter/processed"`.|
+|[processor_chatter_ros.hpp](connext_nodes_cpp/src/processor/processor_chatter_ros.hpp)|Instantiation of `rti::ros2::RosProcessorNode<std_msgs::msg::String, std_msgs::msg::String>` for topics `"chatter"`/`"chatter/processed"`.|
+|[processor_chatter.hpp](connext_nodes_cpp/src/processor/processor_chatter.hpp)|Middleware-agnostic message processing logic.|
+|[processor_chatter.cpp](connext_nodes_cpp/src/processor/processor_chatter.cpp)|`main()` entry point for the generated executables.|
+
 
 ## Package `connext_node_helpers`
 
