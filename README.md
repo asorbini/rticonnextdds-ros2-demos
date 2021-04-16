@@ -75,6 +75,11 @@ after defining appropriate code generation targets for each type using
 *Example usage:*
 
 ```cmake
+find_package(connext_node_helpers REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(builtin_interfaces REQUIRED)
+
 connext_generate_typesupport_library(my_connext_types_lib
   MESSAGES
     std_msgs/String
@@ -104,6 +109,9 @@ must always be included as `#include "<pkg>/<type>.idl"`).
 *Example usage:*
 
 ```cmake
+find_package(connext_node_helpers REQUIRED)
+find_package(std_msgs REQUIRED)
+
 connext_generate_message_typesupport_cpp(String PACKAGE std_msgs)
 
 add_executable(my_app
@@ -127,6 +135,8 @@ between the node component and the RMW.
 *Example usage:*
 
 ```cmake
+find_package(connext_node_helpers REQUIRED)
+
 # First create a library with node components
 add_library(my_node_components SHARED
   my_node.cpp)
@@ -154,6 +164,9 @@ target with the required dependencies and the appropriate linkage.
 *Example usage:*
 
 ```cmake
+find_package(connext_node_helpers REQUIRED)
+find_package(std_msgs REQUIRED)
+
 # Generate type support files
 connext_generate_message_typesupport_cpp(String
   PACKAGE std_msgs)
