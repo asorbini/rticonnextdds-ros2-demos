@@ -219,7 +219,8 @@ connext_generate_typesupport_library(my_connext_types_lib
     sensor_msgs/PointCloud2
   IDLS
     idl/my/custom/ns/MyType.idl@my/custom/ns
-    idl/SomeTypesWithoutNamespace.idl)
+    idl/SomeTypesWithoutNamespace.idl
+  ZEROCOPY)
 ```
 
 #### connext_generate_message_typesupport_cpp
