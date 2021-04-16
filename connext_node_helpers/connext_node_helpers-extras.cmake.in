@@ -11,6 +11,13 @@
 # generated from connext_node_helpers/connext_node_helpers-extras.cmake.in
 
 ################################################################################
+# Cache useful paths in variables
+################################################################################
+# Path to `<pkg-install>/share`
+# `@PROJECT_NAME@_DIR` is `<pkg-install>/share/cmake`
+get_filename_component(@PROJECT_NAME@_SHARE_DIR "${@PROJECT_NAME@_DIR}" DIRECTORY)
+
+################################################################################
 # Load RTI Connext DDS using ROS 2 package `rti_connext_dds_cmake_module`
 ################################################################################
 # rclcpp's dependency chain will already include `rti_connext_dds_cmake_module`
@@ -21,9 +28,27 @@
 # This is required for things to work properly.
 ################################################################################
 find_package(rti_connext_dds_cmake_module REQUIRED)
-list(INSERT CMAKE_MODULE_PATH 0 "${CONNEXTDDS_DIR}/resource/cmake")
-message(STATUS "loading RTI Connext DDS with `rti_connext_cmake_module`")
-find_package(RTIConnextDDS REQUIRED)
+
+# Instead of using the default `FindRTIConnextDDS.cmake` shipped with Connext
+# use the one included in `connext_node_helpers` which is up to date with the
+# latest version from `rticonnextdds-examples`.
+list(INSERT CMAKE_MODULE_PATH 0 "${@PROJECT_NAME@_DIR}")
+
+# Determine list of optional Connext components to load.
+# Auto-loading of components may be overridden by specifying variable
+# CONNEXTDDS_COMPONENTS before loading `connext_node_helpers`.
+if("${CONNEXTDDS_COMPONENTS}" STREQUAL "")
+  set(CONNEXTDDS_COMPONENTS
+    metp)
+endif()
+
+set(CONNEXTDDS_COMPONENTS ${CONNEXTDDS_COMPONENTS}
+  CACHE LIST "List of optional RTI Connext DDS components to load" FORCE)
+
+message(STATUS
+  "loading RTI Connext DDS with components: ${CONNEXTDDS_COMPONENTS}")
+
+find_package(RTIConnextDDS REQUIRED COMPONENTS ${CONNEXTDDS_COMPONENTS})
 if(NOT RTIConnextDDS_FOUND)
   message(FATAL_ERROR "RTI Connext DDS (${CONNEXTDDS_ARCH}) not found in "
     "'${CONNEXTDDS_DIR}'")
@@ -33,9 +58,14 @@ elseif("${RTICONNEXTDDS_VERSION}" VERSION_LESS_EQUAL "6.0.0")
   set(RTIConnextDDS_FOUND false)
 endif()
 
-get_filename_component(@PROJECT_NAME@_SHARE_DIR "${@PROJECT_NAME@_DIR}" DIRECTORY)
+################################################################################
+# Path to custom `node_main.cpp.in` to replace the one from `rclcpp_components`
+################################################################################
 set(@PROJECT_NAME@_NODE_TEMPLATE "${@PROJECT_NAME@_SHARE_DIR}/cmake/node_main.cpp.in")
 
+################################################################################
+# Include CMake helper functions
+################################################################################
 include("${@PROJECT_NAME@_DIR}/connext_components_register_node.cmake")
 include("${@PROJECT_NAME@_DIR}/connext_add_executable.cmake")
 include("${@PROJECT_NAME@_DIR}/connext_generate_message_typesupport_cpp.cmake")

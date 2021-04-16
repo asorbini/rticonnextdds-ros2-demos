@@ -59,8 +59,14 @@ connext_generate_typesupport_library(connext_nodes_cpp_types
     sensor_msgs/PointField
     sensor_msgs/PointCloud2
   IDLS
-    idl/rti/flat_data/CameraImage.idl@rti/flat_data
-    idl/ShapeType.idl)
+    idl/ShapeType.idl
+    idl/camera/CameraCommon.idl@camera
+    idl/camera/CameraCommonFlat.idl@camera
+    idl/camera/CameraImage.idl@camera
+    idl/camera/CameraImageFlat.idl@camera
+    idl/camera/CameraImageFlatZero.idl@camera
+    idl/camera/CameraImageZero.idl@camera
+  ZEROCOPY)
 
 ################################################################################
 # Build example stand-alone applications

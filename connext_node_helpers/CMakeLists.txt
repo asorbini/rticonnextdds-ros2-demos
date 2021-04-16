@@ -74,6 +74,7 @@ endif()
 # Install CMake helpers
 install(
     FILES
+      cmake/FindRTIConnextDDS.cmake
       cmake/connext_add_executable.cmake
       cmake/connext_components_register_node.cmake
       cmake/connext_generate_message_typesupport_cpp.cmake

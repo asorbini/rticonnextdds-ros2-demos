@@ -14,7 +14,7 @@
 ################################################################################
 function(connext_generate_typesupport_library lib)
   cmake_parse_arguments(_tslib
-    "" # boolean arguments
+    "ZEROCOPY" # boolean arguments
     "INSTALL_PREFIX" # single value arguments
     "MESSAGES;SERVICES;DEPENDS;IDLS" # multi-value arguments
     ${ARGN} # current function arguments
@@ -107,8 +107,10 @@ function(connext_generate_typesupport_library lib)
   # Define library target to build all generated files into shared library
   add_library(${lib} SHARED
     ${_tslib_GENERATED_FILES})
-  target_link_libraries(${lib}
-    RTIConnextDDS::cpp2_api)
+  target_link_libraries(${lib} RTIConnextDDS::cpp2_api)
+  if(_tslib_ZEROCOPY)
+    target_link_libraries(${lib} RTIConnextDDS::metp)
+  endif()
   target_include_directories(${lib}
     PUBLIC
       "$<BUILD_INTERFACE:${_tslib_OUTPUT_DIR}>"
