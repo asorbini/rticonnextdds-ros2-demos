@@ -65,7 +65,10 @@ endif()
 # Install CMake helpers
 install(
     FILES
-      cmake/connext_node.cmake
+      cmake/connext_add_executable.cmake
+      cmake/connext_components_register_node.cmake
+      cmake/connext_generate_message_typesupport_cpp.cmake
+      cmake/connext_generate_typesupport_library.cmake
       cmake/node_main.cpp.in
     DESTINATION "share/${PROJECT_NAME}/cmake")
 
