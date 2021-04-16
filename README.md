@@ -248,7 +248,7 @@ find_package(connext_node_helpers REQUIRED)
 # When using this syntax, the first argument is the "base name" of the type
 # and the PACKAGE argument must always be specified to qualify the type.
 # The list of generated files will be stored as `${std_msgs_String_FILES}`.
-# The generated code must be included with `#include "std_msgs/msg/String.hpp`.
+# The generated code must be included with `#include "std_msgs/msg/String.hpp"`.
 find_package(std_msgs REQUIRED)
 connext_generate_message_typesupport_cpp(String PACKAGE std_msgs)
 
@@ -257,12 +257,12 @@ connext_generate_message_typesupport_cpp(String PACKAGE std_msgs)
 # PACKAGE argument can be used to specify an optional "include prefix".
 
 # Generated files will be available as `${my_custom_ns_MyType_FILES}`
-# The generated code must be included with `#include "my/custom/ns/MyType.hpp`.
+# The generated code must be included with `#include "my/custom/ns/MyType.hpp"`.
 connext_generate_message_typesupport_cpp(idl/my/custom/ns/MyType.idl
   PACKAGE my/custom/ns)
 
 # Generated files will be available as `${SomeTypesWithoutNamespace_FILES}`
-# The generated code must be included with `#include "SomeTypesWithoutNamespace.hpp`.
+# The generated code must be included with `#include "SomeTypesWithoutNamespace.hpp"`.
 connext_generate_message_typesupport_cpp(idl/SomeTypesWithoutNamespace.idl)
 
 add_executable(my_app
