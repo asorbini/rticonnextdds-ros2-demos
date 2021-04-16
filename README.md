@@ -86,10 +86,9 @@ colcon build --symlink-install
 
 ## Run examples
 
-Some examples are built as stand-alone executable, which must be run directly,
-while a few examples are provided in the form of registered components that
-can be run with `ros2 run`. Regardless, all examples must be run with
-`rmw_connextdds` as the RMW implementation:
+Some examples are built as stand-alone executables, and they must be run directly,
+while other examples are provided as `rclcpp` components that can be run with
+`ros2 run`. All examples must be run with `rmw_connextdds` as the RMW implementation:
 
 ```sh
 source ws-connext-demos/install/setup.bash
