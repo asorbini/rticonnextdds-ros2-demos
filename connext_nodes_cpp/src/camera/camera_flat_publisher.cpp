@@ -8,19 +8,23 @@
 // not be liable for any incidental or consequential damages arising out of the
 // use or inability to use the software.
 
+#include "CameraImagePublisher.hpp"
 
-// Types common to all CameraImage definitions
-module camera {
-module common {
-    const int32 IMAGE_SIZE = 8294400 * 3;
-    const int32 CAMERA_WIDTH_DEFAULT = 7680;
-    const int32 CAMERA_HEIGHT_DEFAULT = 4320;
-    const int32 CAMERA_TIMEOUT_DEFAULT = 10; //milliseconds
+#include "camera/CameraImageFlat.hpp"
 
-    enum Format {
-        RGB,
-        HSV,
-        YUV
-    };
-};  // module common
-};  // module camera
+namespace rti { namespace connext_nodes_cpp {
+
+class CameraImagePublisherFlat :
+  public BaseCameraImagePublisherFlat<camera::flat::CameraImage>
+{
+public:
+  CONNEXT_NODES_CPP_PUBLIC
+  explicit CameraImagePublisherFlat(const rclcpp::NodeOptions & options)
+  : CameraImagePublisher(options)
+  {}
+};
+
+}  // namespace connext_nodes_cpp
+}  // namespace rti
+
+RCLCPP_COMPONENTS_REGISTER_NODE(rti::connext_nodes_cpp::CameraImagePublisherFlat)

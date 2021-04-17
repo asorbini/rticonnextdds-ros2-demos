@@ -12,7 +12,7 @@
 
 // CameraImage using flat-data
 module camera {
-module flat_data {
+module flat {
     @final
     @language_binding(FLAT_DATA)
     struct CameraImage {

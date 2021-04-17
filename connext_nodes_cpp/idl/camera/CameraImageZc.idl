@@ -8,19 +8,27 @@
 // not be liable for any incidental or consequential damages arising out of the
 // use or inability to use the software.
 
+#include "camera/CameraCommonFlat.idl"
 
-// Types common to all CameraImage definitions
+// CameraImage using zero-copy
 module camera {
-module common {
-    const int32 IMAGE_SIZE = 8294400 * 3;
-    const int32 CAMERA_WIDTH_DEFAULT = 7680;
-    const int32 CAMERA_HEIGHT_DEFAULT = 4320;
-    const int32 CAMERA_TIMEOUT_DEFAULT = 10; //milliseconds
-
-    enum Format {
-        RGB,
-        HSV,
-        YUV
+module zc {
+    @final
+    struct Resolution {
+        int32 height;
+        int32 width;
     };
-};  // module common
+
+    @final
+    @transfer_mode(SHMEM_REF)
+    // Use XCDR2 format so that plain DataWriters can communicate with
+    // flat-data DataReaders, which only support XCDR2
+    @allowed_data_representation(XCDR2)
+    struct CameraImage {
+        int64 timestamp;
+        common::Format format;
+        Resolution resolution;
+        octet data[common::IMAGE_SIZE];
+    };
+};  // module zero_copy
 };  // module camera

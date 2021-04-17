@@ -10,25 +10,17 @@
 
 #include "camera/CameraCommonFlat.idl"
 
-// CameraImage using zero-copy
+// CameraImage using flat-data
 module camera {
-module zero_copy {
-    @final
-    struct Resolution {
-        int32 height;
-        int32 width;
-    };
-
+module flat_zc {
     @final
     @transfer_mode(SHMEM_REF)
-    // Use XCDR2 format so that plain DataWriters can communicate with
-    // flat-data DataReaders, which only support XCDR2
-    @allowed_data_representation(XCDR2)
+    @language_binding(FLAT_DATA)
     struct CameraImage {
         int64 timestamp;
         common::Format format;
-        Resolution resolution;
+        common_flat::Resolution resolution;
         octet data[common::IMAGE_SIZE];
     };
-};  // module zero_copy
+};  // module flat_data_zero_copy
 };  // module camera

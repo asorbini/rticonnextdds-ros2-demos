@@ -64,8 +64,8 @@ connext_generate_typesupport_library(connext_nodes_cpp_types
     idl/camera/CameraCommonFlat.idl@camera
     idl/camera/CameraImage.idl@camera
     idl/camera/CameraImageFlat.idl@camera
-    idl/camera/CameraImageFlatZero.idl@camera
-    idl/camera/CameraImageZero.idl@camera
+    idl/camera/CameraImageFlatZc.idl@camera
+    idl/camera/CameraImageZc.idl@camera
   ZEROCOPY)
 
 ################################################################################
@@ -114,8 +114,8 @@ connext_add_executable(
 # Create a library for the "component" Nodes
 ################################################################################
 add_library(connext_node_components SHARED
-  src/components/talker.cpp
-  src/components/listener.cpp)
+  src/chatter/talker.cpp
+  src/chatter/listener.cpp)
 ament_target_dependencies(connext_node_components
   rclcpp
   rclcpp_components
@@ -146,6 +146,53 @@ connext_components_register_node(connext_node_components
   PLUGIN "rti::connext_nodes_cpp::DdsListener"
   EXECUTABLE listener)
 
+################################################################################
+# Build applications based on standard IDL files
+################################################################################
+
+# Camera example is built as a component library
+add_library(camera_components SHARED
+  src/camera/camera_flat_publisher.cpp
+  src/camera/camera_flat_zc_publisher.cpp
+  src/camera/camera_plain_publisher.cpp
+  src/camera/camera_zc_publisher.cpp
+  src/camera/CameraImageLatency.hpp
+  src/camera/CameraImageManipulator.hpp
+  src/camera/CameraImagePublisher.hpp)
+ament_target_dependencies(camera_components
+  rclcpp
+  rclcpp_components)
+target_compile_definitions(camera_components
+  PRIVATE "CONNEXT_NODES_CPP_BUILDING_DLL")
+target_include_directories(camera_components
+  PRIVATE
+    ${CMAKE_CURRENT_BINARY_DIR}/rtiddsgen
+    ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_link_libraries(camera_components
+  connext_nodes_cpp_types
+  RTIConnextDDS::cpp2_api)
+set_target_properties(camera_components PROPERTIES ENABLE_EXPORTS true)
+install(TARGETS
+  camera_components
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin)
+
+connext_components_register_node(camera_components
+  PLUGIN "rti::connext_nodes_cpp::CameraImagePublisherPlain"
+  EXECUTABLE camera_plain_pub)
+
+connext_components_register_node(camera_components
+  PLUGIN "rti::connext_nodes_cpp::CameraImagePublisherFlat"
+  EXECUTABLE camera_flat_pub)
+
+connext_components_register_node(camera_components
+  PLUGIN "rti::connext_nodes_cpp::CameraImagePublisherFlatZc"
+  EXECUTABLE camera_flat_zc_pub)
+
+connext_components_register_node(camera_components
+  PLUGIN "rti::connext_nodes_cpp::CameraImagePublisherZc"
+  EXECUTABLE camera_zc_pub)
 
 ################################################################################
 # Register ROS 2 package

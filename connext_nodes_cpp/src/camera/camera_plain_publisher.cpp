@@ -8,19 +8,23 @@
 // not be liable for any incidental or consequential damages arising out of the
 // use or inability to use the software.
 
-#include "camera/CameraCommonFlat.idl"
+#include "CameraImagePublisher.hpp"
 
-// CameraImage using flat-data
-module camera {
-module flat_data_zero_copy {
-    @final
-    @transfer_mode(SHMEM_REF)
-    @language_binding(FLAT_DATA)
-    struct CameraImage {
-        int64 timestamp;
-        common::Format format;
-        common_flat::Resolution resolution;
-        octet data[common::IMAGE_SIZE];
-    };
-};  // module flat_data_zero_copy
-};  // module camera
+#include "camera/CameraImage.hpp"
+
+namespace rti { namespace connext_nodes_cpp {
+
+class CameraImagePublisherPlain :
+  public BaseCameraImagePublisherPlain<camera::plain::CameraImage>
+{
+public:
+  CONNEXT_NODES_CPP_PUBLIC
+  explicit CameraImagePublisherPlain(const rclcpp::NodeOptions & options)
+  : CameraImagePublisher(options)
+  {}
+};
+
+}  // namespace connext_nodes_cpp
+}  // namespace rti
+
+RCLCPP_COMPONENTS_REGISTER_NODE(rti::connext_nodes_cpp::CameraImagePublisherPlain)

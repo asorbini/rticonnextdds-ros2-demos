@@ -124,10 +124,10 @@ automatically converted from ROS IDL to OMG IDL by the ROS 2 build process.
 
 | Example | Description   |
 |---------|---------------|
-|[talker.cpp](connext_nodes_cpp/src/components/talker.cpp)| Connext-based version of [demo_nodes_cpp/src/topics/talker.cpp](https://github.com/ros2/demos/blob/master/demo_nodes_cpp/src/topics/talker.cpp)|
-|[listener.cpp](connext_nodes_cpp/src/components/listener.cpp)| Connext-based version of [demo_nodes_cpp/src/topics/listener.cpp](https://github.com/ros2/demos/blob/master/demo_nodes_cpp/src/topics/listener.cpp)|
-|[talker_main.cpp](connext_nodes_cpp/src/standalone/talker_main.cpp)| Stand-alone version of [talker.cpp](connext_nodes_cpp/src/components/talker.cpp)|
-|[listener_main.cpp](connext_nodes_cpp/src/standalone/listener_main.cpp)| Stand-alone version of [listener.cpp](connext_nodes_cpp/src/components/listener.cpp)|
+|[talker.cpp](connext_nodes_cpp/src/chatter/talker.cpp)| Connext-based version of [demo_nodes_cpp/src/topics/talker.cpp](https://github.com/ros2/demos/blob/master/demo_nodes_cpp/src/topics/talker.cpp)|
+|[listener.cpp](connext_nodes_cpp/src/chatter/listener.cpp)| Connext-based version of [demo_nodes_cpp/src/topics/listener.cpp](https://github.com/ros2/demos/blob/master/demo_nodes_cpp/src/topics/listener.cpp)|
+|[talker_main.cpp](connext_nodes_cpp/src/standalone/talker_main.cpp)| Stand-alone version of [talker.cpp](connext_nodes_cpp/src/chatter/talker.cpp)|
+|[listener_main.cpp](connext_nodes_cpp/src/standalone/listener_main.cpp)| Stand-alone version of [listener.cpp](connext_nodes_cpp/src/chatter/listener.cpp)|
 
 #### processor_chatter
 
