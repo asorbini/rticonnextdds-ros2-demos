@@ -11,141 +11,46 @@
 #ifndef CameraImagePublisher_hpp_
 #define CameraImagePublisher_hpp_
 
-#include <chrono>
-#include <cstdio>
-#include <memory>
-#include <utility>
-
-#include <dds/dds.hpp>
-
-#include "rclcpp/rclcpp.hpp"
-#include "rclcpp_components/register_node_macro.hpp"
-
-#include "connext_nodes/visibility_control.h"
-
-#include "CameraImageManipulator.hpp"
+#include "CameraImageTester.hpp"
 
 namespace rti { namespace connext_nodes_cpp {
 
-template<typename CameraImageType, typename Manipulator>
-class CameraImagePublisher : public rclcpp::Node
+template<typename T, typename M, typename A>
+class CameraImagePublisher : public CameraImageTester<T, M, A>
 {
 public:
   CONNEXT_NODES_CPP_PUBLIC
   CameraImagePublisher(
+    const char * const name,
     const rclcpp::NodeOptions & options,
-    const uint64_t max_samples = 1000000,
-    const uint64_t max_execution_time = 0,
-    const dds::core::Duration wait_timeout = dds::core::Duration(10),
-    const uint64_t print_interval = 4000000,
-    const char * const topic_name_ping = "CameraImagePing",
-    const char * const topic_name_pong = "CameraImagePong",
-    const char * const type_name = "CameraImage")
-  : Node("camera_plain", options),
-    max_samples_(max_samples),
-    max_execution_time_(max_execution_time),
-    wait_timeout_(wait_timeout),
-    print_interval_(print_interval)
+    const CameraImageTestOptions & test_options = CameraImageTestOptions::defaults())
+  : CameraImageTester<T, M, A>(name, options, test_options)
   {
-    using namespace std::chrono_literals;
-    using namespace dds::core;
-
-    // Create a function for when messages are to be sent.
-    setvbuf(stdout, NULL, _IONBF, BUFSIZ);
-
-    // The DomainParticipant is created on domain 0 by default
-    participant_ = dds::domain::find(0);
-    assert(null != participant_);
-    // Create the ping DataWriter
-    dds::pub::Publisher publisher(participant_);
-    dds::topic::Topic<CameraImageType> topic_ping(participant_,
-      topic_name_ping, type_name);
-    auto writer_qos = publisher.default_datawriter_qos(); 
-    writer_qos << policy::Reliability::Reliable();
-    writer_qos << policy::History(policy::HistoryKind::KEEP_LAST, 1);
-    writer_ = dds::pub::DataWriter<CameraImageType>(
-      publisher, topic_ping, writer_qos);
-
-    // Create the pong DataReader
-    dds::sub::Subscriber subscriber(participant_);
-    dds::topic::Topic<CameraImageType> topic_pong(participant_,
-      topic_name_pong, type_name);
-    auto reader_qos = subscriber.default_datareader_qos(); 
-    reader_qos << policy::Reliability::Reliable();
-    reader_qos << policy::History(policy::HistoryKind::KEEP_LAST, 1);
-    reader_ = dds::sub::DataReader<CameraImageType>(
-      subscriber, topic_pong, reader_qos);
+    this->init_test(
+      // ping writer configuration
+      this->test_options_.topic_name_ping,
+      this->test_options_.type_name,
+      this->test_options_.qos_profile,
+      // pong reader configuration
+      this->test_options_.topic_name_pong,
+      this->test_options_.type_name,
+      this->test_options_.qos_profile);
     
-    // Create a ReadCondition for any data on the pong reader, and attach it to
-    // a Waitset
-    read_condition_ = dds::sub::cond::ReadCondition(
-      reader_, dds::sub::status::DataState::any());
-
-    waitset_ += read_condition_;
-
-    ping_sample_ = Manipulator::prealloc(writer_);
-
-    auto ping_pong_cb = [this]() {
-      ping_pong();
-    };
-
-    // Use a fast timer to schedule the ping_pong() function as quickly as possible
-    // The function itself will block the calling timer to wait for the pong.
-    timer_ = this->create_wall_timer(1ns, ping_pong_cb);
-  }
-
-  // Wait for discovery
-  void wait_for_reader(bool match = true)
-  {
-    if (match) {
-      RCLCPP_INFO(this->get_logger(),
-        "Waiting for the subscriber application to match ping writer...");
-    } else {
-      RCLCPP_INFO(this->get_logger(),
-        "Waiting for the subscriber application to unmatch ping writer...");
-    }
-
-    while (((match && dds::pub::matched_subscriptions(writer_).empty())
-            || (!match && !dds::pub::matched_subscriptions(writer_).empty())) &&
-            rclcpp::ok()) {
-      rti::util::sleep(
-        dds::core::Duration::from_millisecs(
-          camera::common::CAMERA_TIMEOUT_DEFAULT));
-    }
-
-    if (dds::pub::matched_subscriptions(writer_).empty()) {
-      RCLCPP_ERROR(this->get_logger(), "shutdown before ping writer match");
-      throw std::runtime_error("shutdown before ping writer match");
-    }
-
-    RCLCPP_INFO(this->get_logger(), "Ping writer matched.");
-  }
-
-  void wait_for_writer()
-  {
     RCLCPP_INFO(this->get_logger(),
-      "Waiting for the subscriber application to match pong reader...");
-
-    while (dds::sub::matched_publications(reader_).empty() && rclcpp::ok()) {
-      rti::util::sleep(
-        dds::core::Duration::from_millisecs(
-          camera::common::CAMERA_TIMEOUT_DEFAULT));
-    }
-
-    if (dds::sub::matched_publications(reader_).empty()) {
-      RCLCPP_ERROR(this->get_logger(), "shutdown before pong reader match");
-      throw std::runtime_error("shutdown before pong reader match");
-    }
-
-    RCLCPP_INFO(this->get_logger(), "Pong reader matched.");
+      "camera publisher ready, waiting for subscriber...");
   }
 
-  void print_latency(int total_latency, int count)
+protected:
+  virtual void print_latency()
   {
     std::ostringstream msg;
 
-    if (count > 0) {
-      msg << "Avg-Latency: " << total_latency / (count * 2) << "ms";
+    if (count_ > 0) {
+      const uint64_t avg_us = total_latency_ / (count_ * 2);
+      const double avg_ms = static_cast<double>(avg_us) / 1000.0;
+      msg << "Avg-Latency[" << count_ << "/" <<
+        this->test_options_.max_samples << "]: " <<
+        std::fixed << std::setprecision(3) << avg_ms << " ms";
     } else {
       msg << "Avg-Latency: no samples yet";
     }
@@ -153,129 +58,145 @@ public:
     RCLCPP_INFO(this->get_logger(), msg.str().c_str());
   }
 
-  uint64_t
-  publish_begin()
+  virtual void on_test_state_changed(
+    const size_t pub_match_count,
+    const size_t sub_match_count,
+    const bool was_active,
+    const bool is_ready,
+    bool & is_active)
   {
-    wait_for_reader();
-
-    wait_for_writer();
-
-    RCLCPP_INFO(this->get_logger(),
-      "Discovery complete! Starting publishing: max=%lu", max_samples_);
-
-    return participant_->current_time().to_microsecs();
-  }
-
-  void
-  publish_complete()
-  {
-    RCLCPP_INFO(this->get_logger(), "All samples published: %lu/%lu",
-      count_, max_samples_);
-
-    Manipulator::timestamp(*ping_sample_, 0);
-    writer_->write(*ping_sample_);
-
-    // Cancel scheduling timer
-    timer_->cancel();
-
-    print_latency(total_latency_, count_);
-
-    RCLCPP_INFO(this->get_logger(), "press CTRL+C to exit...");
-  }
-
-  bool
-  is_publish_complete()
-  {
-    assert(send_ts_ > 0);
-    assert(start_ts_ > 0);
-  
-    return ((max_samples_ > 0 && count_ >= max_samples_) ||
-      (max_execution_time_ > 0 && send_ts_ > max_execution_time_ - start_ts_));
-  }
-
-  void
-  ping_pong()
-  {
-    if (count_ == 0) {
-      start_ts_ = publish_begin();
+    if (is_ready) {
+      if (!was_active) {
+        RCLCPP_INFO(this->get_logger(), "all endpoints matched, beginning test");
+        is_active = true;
+        test_complete_ = false;
+        count_ignored_ = 0;
+        count_ = 0;
+        start_ts_ = this->participant_->current_time().to_microsecs();
+        ping();
+      }
+    } else {
+      if (!was_active) {
+        RCLCPP_INFO(this->get_logger(),
+          "match event detected: pong_reader=%lu, ping_writer=%lu",
+          pub_match_count, sub_match_count);
+      } else {
+        is_active = false;
+        if (test_complete_) {
+          RCLCPP_INFO(this->get_logger(), "test completed, shutting down");
+        } else {
+          RCLCPP_ERROR(this->get_logger(), "lost matches, shutting down");
+        }
+      }
     }
-    send_ts_ = participant_->current_time().to_microsecs();
+  }
 
-    if (is_publish_complete()) {
-      publish_complete();
+  virtual void ping()
+  {
+    ping_ts_ = this->participant_->current_time().to_microsecs();
+
+    auto ping = A::alloc(this->writer_, this->cached_sample_);
+
+    if ((this->test_options_.max_samples > 0 && count_ >=
+            this->test_options_.max_samples) ||
+      (this->test_options_.max_execution_time > 0 && ping_ts_ >
+        this->test_options_.max_execution_time - start_ts_))
+    {
+      RCLCPP_INFO(this->get_logger(), "all samples published or max time expired: %lu/%lu",
+        count_, this->test_options_.max_samples);
+
+      M::timestamp(*ping, 0);
+      this->writer_->write(*ping);
+
+      print_latency();
+
+      test_complete_ = true;
       return;
     }
 
-    auto ping_sample = Manipulator::alloc(writer_, ping_sample_);
-
     // Populate the sample
-    Manipulator::populate(*ping_sample, count_);
+    M::format(*ping, camera::common::Format::RGB);
+    M::resolution_height(*ping, camera::common::CAMERA_HEIGHT_DEFAULT);
+    M::resolution_width(*ping, camera::common::CAMERA_WIDTH_DEFAULT);
+
+    // Just set the first 4 bytes
+    for (int i = 0; i < 4; i++) {
+      uint8_t image_value = (48 + count_) % 124;
+      M::data(*ping, i, image_value);
+    }
 
     // Write the ping sample:
-    Manipulator::timestamp(*ping_sample, send_ts_);
-    writer_.write(*ping_sample);
-    if (last_print_interval_ == 0) {
-      last_print_interval_ = send_ts_;
-    }
-    
-    // Wait for the pong
-    auto conditions = waitset_.wait(wait_timeout_);
-    if (conditions.empty()) {
-      RCLCPP_ERROR(this->get_logger(), "timeout while waiting for pong");
-      throw std::runtime_error("timeout while waiting for pong");
-    }
+    M::timestamp(*ping, ping_ts_);
+    this->writer_.write(*ping);
+  }
 
-    // Read pong sample and calculate latency
-    auto pong_samples = reader_.take();
+  virtual void on_data()
+  {
+    // Read pong sample and calculate latency. Always peform a take so the
+    // listener is not called repeatedly.
+    auto pong_samples = this->reader_.take();
     const bool has_data = pong_samples.length() > 0;
     if (has_data && pong_samples[0].info().valid()) {
-      count_ += 1;
-      auto pong_ts = Manipulator::timestamp(pong_samples[0].data());
-      uint64_t receive_ts = participant_->current_time().to_microsecs();
+      if (!this->test_active_) {
+        RCLCPP_ERROR(this->get_logger(), "pong received while test inactive");
+        this->shutdown();
+        return;
+      }
+
+      auto pong_ts = M::timestamp(pong_samples[0].data());
+      uint64_t receive_ts = this->participant_->current_time().to_microsecs();
       // this test will not cope well with a drifting clock
       assert(receive_ts >= pong_ts);
-      uint64_t latency = receive_ts - pong_ts;
-      total_latency_ += latency;
-      if (receive_ts > last_print_interval_ -print_interval_) {
-          print_latency(total_latency_, count_);
-          last_print_interval_ = 0;
+      uint64_t latency = (receive_ts - pong_ts) / 2;
+
+      // we ignore the first few samples to let things ramp up to steady state
+      const bool ignored =
+        this->test_options_.ignored_initial_samples > count_ignored_;
+      if (!ignored) {
+        count_ += 1;
+        total_latency_ += latency;
+
+        if (last_print_ == 0 ||
+          receive_ts - this->test_options_.print_interval > last_print_) {
+          print_latency();
+          last_print_ = receive_ts;
+        }
+      } else {
+        count_ignored_ += 1;
       }
+
+      ping();
     } else if (has_data && !pong_samples[0].info().valid()) {
-      RCLCPP_ERROR(this->get_logger(), "lost pong writer before end of test");
-      throw std::runtime_error("lost pong writer before end of test");
+      if (!test_complete_) {
+        RCLCPP_ERROR(this->get_logger(), "lost pong writer before end of test");
+        this->shutdown();
+      }
+    } else if (!has_data) {
+      RCLCPP_ERROR(this->get_logger(), "woke up without data");
+      this->shutdown();
     }
   }
 
-private:
-  const uint64_t max_samples_;
-  const uint64_t max_execution_time_;
-  const dds::core::Duration wait_timeout_;
-  const uint64_t print_interval_;
+  bool test_complete_{false};
   uint64_t count_ = 0;
+  uint64_t count_ignored_ = 0;
   uint64_t total_latency_ = 0;
-  uint64_t last_print_interval_ = 0;
+  uint64_t last_print_ = 0;
   uint64_t start_ts_ = 0;
-  uint64_t send_ts_ = 0;
-  dds::domain::DomainParticipant participant_{nullptr};
-  dds::pub::DataWriter<CameraImageType> writer_{nullptr};
-  dds::sub::DataReader<CameraImageType> reader_{nullptr};
-  dds::sub::cond::ReadCondition read_condition_{nullptr};
-  CameraImageType * ping_sample_{nullptr};
-  dds::core::cond::WaitSet waitset_;
-  rclcpp::TimerBase::SharedPtr timer_;
+  uint64_t ping_ts_ = 0;
 };
 
 template<typename T>
-using BaseCameraImagePublisherPlain = CameraImagePublisher<T, CameraImageManipulator<T>>;
+using BaseCameraImagePublisherPlain = CameraImagePublisher<T, CameraImageManipulatorPlain<T>, CameraImageAllocatorDynamic<T>>;
 
 template<typename T>
-using BaseCameraImagePublisherFlat = CameraImagePublisher<T, CameraImageManipulatorFlat<T>>;
+using BaseCameraImagePublisherFlat = CameraImagePublisher<T, CameraImageManipulatorFlat<T>, CameraImageAllocatorWriter<T>>;
 
 template<typename T>
-using BaseCameraImagePublisherFlatZc = CameraImagePublisher<T, CameraImageManipulatorFlat<T>>;
+using BaseCameraImagePublisherFlatZc = CameraImagePublisher<T, CameraImageManipulatorFlat<T>, CameraImageAllocatorWriter<T>>;
 
 template<typename T>
-using BaseCameraImagePublisherZc = CameraImagePublisher<T, CameraImageManipulatorZc<T>>;
+using BaseCameraImagePublisherZc = CameraImagePublisher<T, CameraImageManipulatorPlain<T>, CameraImageAllocatorWriter<T>>;
 
 }  // namespace connext_nodes_cpp
 }  // namespace rti

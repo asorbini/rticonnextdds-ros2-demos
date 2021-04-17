@@ -12,6 +12,8 @@
 
 #include "camera/CameraImage.hpp"
 
+#include "rclcpp_components/register_node_macro.hpp"
+
 namespace rti { namespace connext_nodes_cpp {
 
 class CameraImagePublisherPlain :
@@ -20,7 +22,7 @@ class CameraImagePublisherPlain :
 public:
   CONNEXT_NODES_CPP_PUBLIC
   explicit CameraImagePublisherPlain(const rclcpp::NodeOptions & options)
-  : CameraImagePublisher(options)
+  : CameraImagePublisher("camera_pub_plain", options)
   {}
 };
 

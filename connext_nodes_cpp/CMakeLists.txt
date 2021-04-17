@@ -152,13 +152,19 @@ connext_components_register_node(connext_node_components
 
 # Camera example is built as a component library
 add_library(camera_components SHARED
-  src/camera/camera_flat_publisher.cpp
-  src/camera/camera_flat_zc_publisher.cpp
-  src/camera/camera_plain_publisher.cpp
-  src/camera/camera_zc_publisher.cpp
-  src/camera/CameraImageLatency.hpp
+  src/camera/camera_pub_flat.cpp
+  src/camera/camera_pub_flat_zc.cpp
+  src/camera/camera_pub_plain.cpp
+  src/camera/camera_pub_zc.cpp
+  src/camera/camera_sub_flat.cpp
+  src/camera/camera_sub_flat_zc.cpp
+  src/camera/camera_sub_plain.cpp
+  src/camera/camera_sub_zc.cpp
   src/camera/CameraImageManipulator.hpp
-  src/camera/CameraImagePublisher.hpp)
+  src/camera/CameraImagePublisher.hpp
+  src/camera/CameraImageSubscriber.hpp
+  src/camera/CameraImageTester.hpp
+  src/camera/CameraImageTestOptions.hpp)
 ament_target_dependencies(camera_components
   rclcpp
   rclcpp_components)
@@ -180,20 +186,35 @@ install(TARGETS
 
 connext_components_register_node(camera_components
   PLUGIN "rti::connext_nodes_cpp::CameraImagePublisherPlain"
-  EXECUTABLE camera_plain_pub)
+  EXECUTABLE camera_pub_plain)
 
 connext_components_register_node(camera_components
   PLUGIN "rti::connext_nodes_cpp::CameraImagePublisherFlat"
-  EXECUTABLE camera_flat_pub)
+  EXECUTABLE camera_pub_flat)
 
 connext_components_register_node(camera_components
   PLUGIN "rti::connext_nodes_cpp::CameraImagePublisherFlatZc"
-  EXECUTABLE camera_flat_zc_pub)
+  EXECUTABLE camera_pub_flat_zc)
 
 connext_components_register_node(camera_components
   PLUGIN "rti::connext_nodes_cpp::CameraImagePublisherZc"
-  EXECUTABLE camera_zc_pub)
+  EXECUTABLE camera_pub_zc)
 
+connext_components_register_node(camera_components
+  PLUGIN "rti::connext_nodes_cpp::CameraImageSubscriberPlain"
+  EXECUTABLE camera_sub_plain)
+
+connext_components_register_node(camera_components
+  PLUGIN "rti::connext_nodes_cpp::CameraImageSubscriberFlat"
+  EXECUTABLE camera_sub_flat)
+
+connext_components_register_node(camera_components
+  PLUGIN "rti::connext_nodes_cpp::CameraImageSubscriberFlatZc"
+  EXECUTABLE camera_sub_flat_zc)
+
+connext_components_register_node(camera_components
+  PLUGIN "rti::connext_nodes_cpp::CameraImageSubscriberZc"
+  EXECUTABLE camera_sub_zc)
 ################################################################################
 # Register ROS 2 package
 ################################################################################

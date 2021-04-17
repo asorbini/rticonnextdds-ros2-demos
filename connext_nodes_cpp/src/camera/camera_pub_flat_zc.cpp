@@ -10,21 +10,23 @@
 
 #include "CameraImagePublisher.hpp"
 
-#include "camera/CameraImageFlat.hpp"
+#include "camera/CameraImageFlatZc.hpp"
+
+#include "rclcpp_components/register_node_macro.hpp"
 
 namespace rti { namespace connext_nodes_cpp {
 
-class CameraImagePublisherFlat :
-  public BaseCameraImagePublisherFlat<camera::flat::CameraImage>
+class CameraImagePublisherFlatZc :
+  public BaseCameraImagePublisherFlatZc<camera::flat_zc::CameraImage>
 {
 public:
   CONNEXT_NODES_CPP_PUBLIC
-  explicit CameraImagePublisherFlat(const rclcpp::NodeOptions & options)
-  : CameraImagePublisher(options)
+  explicit CameraImagePublisherFlatZc(const rclcpp::NodeOptions & options)
+  : CameraImagePublisher("camera_pub_flat_zc", options)
   {}
 };
 
 }  // namespace connext_nodes_cpp
 }  // namespace rti
 
-RCLCPP_COMPONENTS_REGISTER_NODE(rti::connext_nodes_cpp::CameraImagePublisherFlat)
+RCLCPP_COMPONENTS_REGISTER_NODE(rti::connext_nodes_cpp::CameraImagePublisherFlatZc)

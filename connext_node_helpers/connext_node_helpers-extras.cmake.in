@@ -43,7 +43,7 @@ if("${CONNEXTDDS_COMPONENTS}" STREQUAL "")
 endif()
 
 set(CONNEXTDDS_COMPONENTS ${CONNEXTDDS_COMPONENTS}
-  CACHE LIST "List of optional RTI Connext DDS components to load" FORCE)
+  CACHE INTERNAL "List of optional RTI Connext DDS components to load" FORCE)
 
 message(STATUS
   "loading RTI Connext DDS with components: ${CONNEXTDDS_COMPONENTS}")
