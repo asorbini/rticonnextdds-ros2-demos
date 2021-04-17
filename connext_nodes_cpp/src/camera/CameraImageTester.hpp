@@ -60,9 +60,17 @@ protected:
       throw std::runtime_error("failed to lookup DomainParticipant");
     }
 
-    // Create a custom Publisher and Subscriber
-    publisher_ = dds::pub::Publisher(participant_);
-    subscriber_ = dds::sub::Subscriber(participant_);
+    // Create a custom Publisher and Subscriber and configure them so that
+    // DataWriters and DataReaders are created disabled. This way we can
+    // configure them, and enable them without loosing any discovery event.
+    auto publisher_qos =  participant_->default_publisher_qos();
+    auto subscriber_qos =  participant_->default_subscriber_qos();
+    dds::core::policy::EntityFactory entity_policy;
+    entity_policy.autoenable_created_entities(false);
+    publisher_qos << entity_policy;
+    subscriber_qos << entity_policy;
+    publisher_ = dds::pub::Publisher(participant_, publisher_qos);
+    subscriber_ = dds::sub::Subscriber(participant_, subscriber_qos);
 
     writer_ = create_writer(
       writer_topic_name, writer_type_name, writer_qos_profile);
@@ -74,6 +82,9 @@ protected:
     cached_sample_ = A::prealloc(writer_);
 
     initialize_waitset();
+
+    writer_->enable();
+    reader_->enable();
   }
 
   virtual void shutdown()
@@ -181,32 +192,29 @@ protected:
   {
     using namespace dds::core::status;
 
-    uint64_t pub_match_count = 0,
-      sub_match_count = 0;
-
     if ((reader_.status_changes() & StatusMask::subscription_matched()).any()) {
       // Access status structures so event flags are reset.
       auto pub_matched_status = reader_.subscription_matched_status();
       (void)pub_matched_status;
-      pub_match_count = pub_matched_status.current_count();
+      match_count_pub_ = pub_matched_status.current_count();
       // auto pub_match_count = dds::sub::matched_publications(reader_).size();
     }
     if ((writer_.status_changes() & StatusMask::publication_matched()).any()) {
       auto sub_matched_status = writer_.publication_matched_status();
       (void)sub_matched_status;
-      sub_match_count = sub_matched_status.current_count();
+      match_count_sub_ = sub_matched_status.current_count();
       // auto sub_match_count = dds::pub::matched_subscriptions(writer_).size();
     }
 
-    const bool is_ready = pub_match_count > 0 && sub_match_count > 0;
+    const bool is_ready = match_count_pub_ > 0 && match_count_sub_ > 0;
     const bool was_active = test_active_;
 
     RCLCPP_INFO(this->get_logger(),
       "on_test_state_changed: pubs=%lu, subs=%lu, was_active=%d, is_ready=%d",
-      pub_match_count, sub_match_count, was_active, is_ready);
+      match_count_pub_, match_count_sub_, was_active, is_ready);
 
     on_test_state_changed(
-      pub_match_count, sub_match_count, was_active, is_ready, test_active_);
+      match_count_pub_, match_count_sub_, was_active, is_ready, test_active_);
     
     RCLCPP_INFO(this->get_logger(),
       "on_test_state_changed(RESULT): is_active=%d", test_active_);
@@ -247,6 +255,8 @@ protected:
 
   const CameraImageTestOptions test_options_;
   bool test_active_{false};
+  uint64_t match_count_pub_ = 0;
+  uint64_t match_count_sub_ = 0;
   dds::domain::DomainParticipant participant_{nullptr};
   dds::pub::Publisher publisher_{nullptr};
   dds::sub::Subscriber subscriber_{nullptr};
