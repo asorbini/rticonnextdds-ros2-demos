@@ -27,9 +27,6 @@
 
 namespace rti { namespace connext_nodes_cpp {
 
-// Create a Talker class that subclasses the generic rclcpp::Node base class.
-// The main function below will instantiate the class as a ROS node.
-// Use Connext's Modern C++ API to create a DataWriter to publish messages.
 template<typename CameraImageType, typename Manipulator>
 class CameraImagePublisher : public rclcpp::Node
 {
