@@ -152,14 +152,14 @@ connext_components_register_node(connext_node_components
 
 # Camera example is built as a component library
 add_library(camera_components SHARED
-  src/camera/camera_pub_flat.cpp
-  src/camera/camera_pub_flat_zc.cpp
-  src/camera/camera_pub_plain.cpp
-  src/camera/camera_pub_zc.cpp
-  src/camera/camera_sub_flat.cpp
-  src/camera/camera_sub_flat_zc.cpp
-  src/camera/camera_sub_plain.cpp
-  src/camera/camera_sub_zc.cpp
+  src/camera/components/camera_pub_flat.cpp
+  src/camera/components/camera_pub_flat_zc.cpp
+  src/camera/components/camera_pub_plain.cpp
+  src/camera/components/camera_pub_zc.cpp
+  src/camera/components/camera_sub_flat.cpp
+  src/camera/components/camera_sub_flat_zc.cpp
+  src/camera/components/camera_sub_plain.cpp
+  src/camera/components/camera_sub_zc.cpp
   src/camera/CameraImagePublisher.hpp
   src/camera/CameraImageSubscriber.hpp
   src/camera/DataMemory.hpp

@@ -66,7 +66,7 @@ public:
   class array {
   public:
     template<typename A, typename E>
-    static void ref(A & array, const size_t i, E & val)
+    static void ref(A array, const size_t i, E & val)
     {
         val = array.get_elements() + i;
     }
