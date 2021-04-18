@@ -1,4 +1,4 @@
-# Example ROS2 Applications using RTI Connext DDS
+# ROS2 applications built with RTI Connext DDS
 
 This repository contains a collection of  ROS 2 applications built using the
 RTI Connext DDS APIs.
@@ -10,7 +10,6 @@ RTI Connext DDS APIs.
   - [processor_chatter](#processor_chatter)
   - [talker/listener](#talkerlistener)
 - [Other useful resources](#other-useful-resources)
-- [License](#license)
 
 ## Build repository
 
@@ -235,4 +234,4 @@ ros2 run demo_nodes_cpp listener
     Used extensively by the demos in this repository.
 - [`rticonnextdds-ros2-msgs`](https://github.com/asorbini/rticonnextdds-ros2-msgs)
   - Helper library containing C++11 message type supports generated with
-   `rtiddsgen` for almost every type include in ROS 2.
+   `rtiddsgen` for almost every type include in ROS
