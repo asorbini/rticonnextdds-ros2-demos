@@ -13,11 +13,11 @@
 
 #include "PingPongSubscriber.hpp"
 
-#include "DataManipulator.hpp"
+#include "DataAccess.hpp"
 
 namespace rti { namespace connext_nodes_cpp {
 
-template<typename T, typename M, typename A>
+template<typename T, typename A, typename M>
 class CameraImageSubscriber : public PingPongSubscriber<T, A>
 {
 public:
@@ -66,16 +66,20 @@ protected:
 };
 
 template<typename T>
-using BaseCameraImageSubscriberPlain = CameraImageSubscriber<T, DataManipulatorPlain<T>, DataAllocatorDynamic<T>>;
+using BaseCameraImageSubscriberPlain =
+  CameraImageSubscriber<T, DataMemoryDynamic<T>, DataAccessPlain<T>>;
 
 template<typename T>
-using BaseCameraImageSubscriberFlat = CameraImageSubscriber<T, DataManipulatorFlat<T>, DataAllocatorLoan<T>>;
+using BaseCameraImageSubscriberFlat =
+  CameraImageSubscriber<T, DataMemoryLoan<T>, DataAccessFlat<T>>;
 
 template<typename T>
-using BaseCameraImageSubscriberFlatZc = CameraImageSubscriber<T, DataManipulatorFlat<T>, DataAllocatorLoan<T>>;
+using BaseCameraImageSubscriberFlatZc =
+  CameraImageSubscriber<T, DataMemoryLoan<T>, DataAccessFlat<T>>;
 
 template<typename T>
-using BaseCameraImageSubscriberZc = CameraImageSubscriber<T, DataManipulatorPlain<T>, DataAllocatorLoan<T>>;
+using BaseCameraImageSubscriberZc =
+  CameraImageSubscriber<T, DataMemoryLoan<T>, DataAccessPlain<T>>;
 
 }  // namespace connext_nodes_cpp
 }  // namespace rti

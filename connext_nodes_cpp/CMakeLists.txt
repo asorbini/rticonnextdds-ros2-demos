@@ -162,8 +162,8 @@ add_library(camera_components SHARED
   src/camera/camera_sub_zc.cpp
   src/camera/CameraImagePublisher.hpp
   src/camera/CameraImageSubscriber.hpp
-  src/camera/DataAllocator.hpp
-  src/camera/DataManipulator.hpp
+  src/camera/DataMemory.hpp
+  src/camera/DataAccess.hpp
   src/camera/PingPongPublisher.hpp
   src/camera/PingPongSubscriber.hpp
   src/camera/PingPongTester.hpp)

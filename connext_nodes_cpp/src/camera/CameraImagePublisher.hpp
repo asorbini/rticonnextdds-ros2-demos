@@ -13,11 +13,11 @@
 
 #include "PingPongPublisher.hpp"
 
-#include "DataManipulator.hpp"
+#include "DataAccess.hpp"
 
 namespace rti { namespace connext_nodes_cpp {
 
-template<typename T, typename M, typename A>
+template<typename T, typename A, typename M>
 class CameraImagePublisher : public PingPongPublisher<T, A>
 {
 public:
@@ -62,16 +62,20 @@ protected:
 };
 
 template<typename T>
-using BaseCameraImagePublisherPlain = CameraImagePublisher<T, DataManipulatorPlain<T>, DataAllocatorDynamic<T>>;
+using BaseCameraImagePublisherPlain =
+  CameraImagePublisher<T, DataMemoryDynamic<T>, DataAccessPlain<T>>;
 
 template<typename T>
-using BaseCameraImagePublisherFlat = CameraImagePublisher<T, DataManipulatorFlat<T>, DataAllocatorLoan<T>>;
+using BaseCameraImagePublisherFlat =
+  CameraImagePublisher<T, DataMemoryLoan<T>, DataAccessFlat<T>>;
 
 template<typename T>
-using BaseCameraImagePublisherFlatZc = CameraImagePublisher<T, DataManipulatorFlat<T>, DataAllocatorLoan<T>>;
+using BaseCameraImagePublisherFlatZc =
+  CameraImagePublisher<T, DataMemoryLoan<T>, DataAccessFlat<T>>;
 
 template<typename T>
-using BaseCameraImagePublisherZc = CameraImagePublisher<T, DataManipulatorPlain<T>, DataAllocatorLoan<T>>;
+using BaseCameraImagePublisherZc =
+  CameraImagePublisher<T, DataMemoryLoan<T>, DataAccessPlain<T>>;
 
 }  // namespace connext_nodes_cpp
 }  // namespace rti

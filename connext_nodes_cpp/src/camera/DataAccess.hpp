@@ -10,8 +10,8 @@
 
 // Utilities used by CameraImage_publisher.cxx and CameraImage_subscriber.cxx.
 
-#ifndef DataManipulator_hpp_
-#define DataManipulator_hpp_
+#ifndef DataAccess_hpp_
+#define DataAccess_hpp_
 
 #include <dds/dds.hpp>
 
@@ -22,7 +22,7 @@
 namespace rti { namespace connext_nodes_cpp {
 
 template<typename T>
-class DataManipulatorPlain
+class DataAccessPlain
 {
 public:
 
@@ -51,7 +51,7 @@ public:
 };
 
 template<typename T>
-class DataManipulatorFlat
+class DataAccessFlat
 {
 public:
 
@@ -83,4 +83,4 @@ public:
 }  // namespace connext_nodes_cpp
 }  // namespace rti
 
-#endif  // DataManipulator_hpp_
+#endif  // DataAccess_hpp_

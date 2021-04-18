@@ -10,15 +10,15 @@
 
 // Utilities used by CameraImage_publisher.cxx and CameraImage_subscriber.cxx.
 
-#ifndef DataAllocator_hpp_
-#define DataAllocator_hpp_
+#ifndef DataMemory_hpp_
+#define DataMemory_hpp_
 
 #include <dds/dds.hpp>
 
 namespace rti { namespace connext_nodes_cpp {
 
 template<typename T>
-class DataAllocatorDynamic
+class DataMemoryDynamic
 {
 public:
   // Dynamically pre-allocate a sample.
@@ -42,7 +42,7 @@ public:
 };
 
 template<typename T>
-class DataAllocatorLoan
+class DataMemoryLoan
 {
 public:
   // No pre-allocated samples, since we are going to loan them from the writer
@@ -69,4 +69,4 @@ public:
 }  // namespace connext_nodes_cpp
 }  // namespace rti
 
-#endif  // DataAllocator_hpp_
+#endif  // DataMemory_hpp_

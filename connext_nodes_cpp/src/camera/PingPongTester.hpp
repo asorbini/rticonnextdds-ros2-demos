@@ -20,7 +20,7 @@
 
 #include "connext_nodes/visibility_control.h"
 
-#include "DataAllocator.hpp"
+#include "DataMemory.hpp"
 
 namespace rti { namespace connext_nodes_cpp {
 
