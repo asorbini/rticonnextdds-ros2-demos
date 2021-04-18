@@ -20,14 +20,6 @@ find_package(ament_cmake REQUIRED)
 find_package(connext_node_helpers REQUIRED)
 
 # Load all message packages
-  # map_msgs/PointCloud2Update
-  # nav_msgs/Path
-  # pcl_msgs/PolygonMesh
-  # sensor_msgs/TimeReference
-  # stereo_msgs/DisparityImage
-  # visualization_msgs/InteractiveMarker
-  # rmw_dds_common/ParticipantEntitiesInfo
-
 set(MESSAGE_BROKEN
   actionlib_msgs/GoalStatusArray
   map_msgs/ProjectedMap

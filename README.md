@@ -4,6 +4,9 @@ This repository contains a collection of example ROS 2/Connext hybrid applicatio
 (`connext_cpp_nodes`), and some helper resources to simplify the implementation of
 this class of ROS 2 applications (`connext_node_helpers`).
 
+The repository also contains a helper library, `connext_msgs`, which contains
+RTI Connext DDS type support for most types included in the ROS 2 distribution.
+
 - [Build dependencies](#build-dependencies)
 - [Build examples](#build-examples)
 - [Run examples](#run-examples)
@@ -17,6 +20,10 @@ this class of ROS 2 applications (`connext_node_helpers`).
     - [connext_generate_message_typesupport_cpp](#connext_generate_message_typesupport_cpp)
     - [connext_components_register_node](#connext_components_register_node)
     - [connext_add_executable](#connext_add_executable)
+- [Package `connext_msgs`](#package-connext_msgs)
+  - [Use DDS types in a ROS 2 application](#use-dds-types-in-a-ros-2-application)
+  - [Included packages](#included-packages)
+  - [Unsupported types](#unsupported-types)
 - [License](#license)
 
 ## Build dependencies
@@ -82,8 +89,11 @@ cd ws-connext-demos
 
 git clone https://github.com/asorbini/rticonnextdds-ros2-demos src/rti/rticonnextdds-ros2-demos
 
-colcon build --symlink-install
+colcon build --symlink-install --packages-skip connext_msgs
 ```
+
+Omit the `--package-skip` argument if you are interested in building the
+`connext_msgs` package.
 
 ## Run examples
 
@@ -432,6 +442,117 @@ connext_add_executable(
     ${std_msgs_String_FILES}
   INCLUDES
     ${CMAKE_CURRENT_BINARY_DIR}/rtiddsgen)
+```
+
+## Package `connext_msgs`
+
+Package `connext_msg` contains a collection of IDL files extracted from the
+ROS 2 Rolling distribution, and modified to compile with `rtiddsgen` so that
+they may be compiled into a single, ready-to-use shared library.
+
+Only IDL files for message types are included.
+
+The IDL files can be updated using script `copy_idls.sh`.
+
+The script will scan a ROS 2 installation, and it will copy all IDL files
+to the `./idl` directory. It will also perform some lightweight processing on
+the files to remove some incompatibilities.
+
+### Use DDS types in a ROS 2 application
+
+Since `connext_msgs` is a regular ROS 2 package, you can just add it to your
+`package.xml` dependencies, and load it in your `CMakeLists.txt` like any other
+package and library:
+
+- `package.xml`:
+
+  ```xml
+  <package format="3">
+    <name>my_package</name>
+    
+    <!-- ... -->
+
+    <depend>connext_msgs</depend>
+  
+    <!-- ... -->
+  </package>
+  ```
+
+- `CMakeLists.txt`
+
+  ```cmake
+  cmake_minimum_required(VERSION 3.5)
+  project(my_package)
+
+  # ...
+
+  # Load package
+  find_package(connext_msgs REQUIRED)
+
+  # ...
+
+  # Add dependency to your targets
+  ament_target_dependencies(my_target  connext_msgs)
+  ament_export_dependencies(connext_msgs)
+
+  ```
+
+In oder to you the types, you must `#include` the appropriate file in your C++
+code. The path is slightly different from the one used for standard ROS 2 messages,
+in that the file name is not converted to all lowercase and "snake case" format,
+instead retaining the same name as the input `.idl`.
+
+For example, in order to use type `sensor_msgs::msg::PointCloud`:
+
+```cpp
+// typical ROS 2 include
+#include "sensor_msgs/msg/point_cloud.hpp"
+
+// DDS type include
+#include "sensor_msgs/msg/PointCloud.hpp"
+```
+
+### Included packages
+
+Types from the following packages are currently included in the library:
+
+```txt
+actionlib_msgs           nav_msgs         std_msgs
+action_msgs              pcl_msgs         stereo_msgs
+builtin_interfaces       pendulum_msgs    test_msgs
+diagnostic_msgs          rcl_interfaces   tf2_msgs
+example_interfaces       rmw_dds_common   trajectory_msgs
+geometry_msgs            rosgraph_msgs    turtlesim
+libstatistics_collector  sensor_msgs      unique_identifier_msgs
+lifecycle_msgs           shape_msgs       visualization_msgs
+map_msgs                 statistics_msgs
+```
+
+### Unsupported types
+
+The following types are currently unsupported, typically because their IDL files
+contain multiple nested `#include`'s of the same file:
+
+```txt
+actionlib_msgs/GoalStatusArray
+map_msgs/ProjectedMap
+nav_msgs/OccupancyGrid
+nav_msgs/Odometry
+sensor_msgs/MultiDOFJointState
+test_msgs/Arrays
+test_msgs/BoundedSequences
+test_msgs/Defaults
+test_msgs/MultiNested
+test_msgs/UnboundedSequences
+trajectory_msgs/MultiDOFJointTrajectory
+trajectory_msgs/MultiDOFJointTrajectoryPoint
+visualization_msgs/InteractiveMarker
+visualization_msgs/InteractiveMarkerControl
+visualization_msgs/InteractiveMarkerFeedback
+visualization_msgs/InteractiveMarkerInit
+visualization_msgs/InteractiveMarkerUpdate
+visualization_msgs/Marker
+visualization_msgs/MarkerArray
 ```
 
 ## License
