@@ -9,7 +9,7 @@ this class of ROS 2 applications (`connext_node_helpers`).
 - [Run examples](#run-examples)
 - [Package `connext_nodes_cpp`](#package-connext_nodes_cpp)
   - [Included Examples](#included-examples)
-  - [camera](#camera)
+    - [camera](#camera)
     - [processor_chatter](#processor_chatter)
     - [talker/listener](#talkerlistener)
 - [Package `connext_node_helpers`](#package-connext_node_helpers)
@@ -114,7 +114,7 @@ Most examples are available both as a stand-alone executable and as an `rclcpp`
 component. When built as a stand-alone executable, the generated binary will
 use the `_main` suffix to differentiate it from the "component-ized" version.
 
-### camera
+#### camera
 
 This set of examples demonstrate the effects of using the Flat-Data and Zero-Copy
 fetures provided by RTI Connext DDS.
