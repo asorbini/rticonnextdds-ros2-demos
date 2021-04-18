@@ -235,6 +235,14 @@ ros2 run demo_nodes_cpp listener
 |[`rticonnextdds-ros2-helpers`](https://github.com/asorbini/rticonnextdds-ros2-helpers)| A collection of utilities to built ROS 2 applications with RTI Connext DDS. Used extensively by the demos in this repository|
 |[`rticonnextdds-ros2-msgs`](https://github.com/asorbini/rticonnextdds-ros2-msgs)|A helper library containing C++11 message type supports generated with `rtiddsgen` for almost every type include in ROS 2|
 
+
+- [`rticonnextdds-ros2-helpers`](https://github.com/asorbini/rticonnextdds-ros2-helpers)
+  - A collection of utilities to built ROS 2 applications with RTI Connext DDS.
+    Used extensively by the demos in this repository.
+- [`rticonnextdds-ros2-msgs`](https://github.com/asorbini/rticonnextdds-ros2-msgs)
+  - A helper library containing C++11 message type supports generated with
+   `rtiddsgen` for almost every type include in ROS 2.
+
 ## License
 
 RTI grants Licensee a license to use, modify, compile, and create derivative
