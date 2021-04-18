@@ -141,14 +141,14 @@ repository.
 
 | Example | Description |
 |---------|-------------|
-|[camera_pub_plain.cpp](connext_nods_cpp/src/camera/camera_pub_plain.cpp) | Publisher using plain memory representation, and default transport |
-|[camera_pub_flat.cpp](connext_nods_cpp/src/camera/camera_pub_flat.cpp) | Publisher using Flat-Data memory representation, and default transport |
-|[camera_pub_flat_zc.cpp](connext_nods_cpp/src/camera/camera_pub_flat_zc.cpp) | Publisher using Flat-Data memory representation, and Zero-Copy transport |
-|[camera_pub_zc.cpp](connext_nods_cpp/src/camera/camera_pub_zc.cpp) | Publisher using plain memory representation, and Zero-Copy transport |
-|[camera_sub_plain.cpp](connext_nods_cpp/src/camera/camera_sub_plain.cpp) | Subscriber using plain memory representation, and default transport |
-|[camera_sub_flat.cpp](connext_nods_cpp/src/camera/camera_sub_flat.cpp) | Subscriber using Flat-Data memory representation, and default transport |
-|[camera_sub_flat_zc.cpp](connext_nods_cpp/src/camera/camera_sub_flat_zc.cpp) | Subscriber using Flat-Data memory representation, and Zero-Copy transport |
-|[camera_sub_zc.cpp](connext_nods_cpp/src/camera/camera_sub_zc.cpp) | Subscriber using plain memory representation, and Zero-Copy transport |
+|[camera_pub_plain.cpp](connext_nodes_cpp/src/camera/camera_pub_plain.cpp) | Publisher using plain memory representation, and default transport |
+|[camera_pub_flat.cpp](connext_nodes_cpp/src/camera/camera_pub_flat.cpp) | Publisher using Flat-Data memory representation, and default transport |
+|[camera_pub_flat_zc.cpp](connext_nodes_cpp/src/camera/camera_pub_flat_zc.cpp) | Publisher using Flat-Data memory representation, and Zero-Copy transport |
+|[camera_pub_zc.cpp](connext_nodes_cpp/src/camera/camera_pub_zc.cpp) | Publisher using plain memory representation, and Zero-Copy transport |
+|[camera_sub_plain.cpp](connext_nodes_cpp/src/camera/camera_sub_plain.cpp) | Subscriber using plain memory representation, and default transport |
+|[camera_sub_flat.cpp](connext_nodes_cpp/src/camera/camera_sub_flat.cpp) | Subscriber using Flat-Data memory representation, and default transport |
+|[camera_sub_flat_zc.cpp](connext_nodes_cpp/src/camera/camera_sub_flat_zc.cpp) | Subscriber using Flat-Data memory representation, and Zero-Copy transport |
+|[camera_sub_zc.cpp](connext_nodes_cpp/src/camera/camera_sub_zc.cpp) | Subscriber using plain memory representation, and Zero-Copy transport |
 
 *Example usage:*
 
