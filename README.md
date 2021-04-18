@@ -8,7 +8,6 @@ The repository also contains a helper library (`connext_msgs`) which contains
 RTI Connext DDS type support for most types included in the ROS 2 distribution.
 
 - [Build dependencies](#build-dependencies)
-- [Build examples](#build-examples)
 - [Run examples](#run-examples)
 - [Package `connext_nodes_cpp`](#package-connext_nodes_cpp)
   - [camera](#camera)
@@ -32,7 +31,8 @@ All example application require RTI Connext DDS 6.x and can only be run using
 [`rmw_connextdds`](https://github.com/ros2/rmw_connextdds).
 
 Once RTI Connext DDS 6.x is installed, build `rmw_connextdds` with it in a
-dedicated workspace:
+dedicated workspace (and then source it before building this repository), or
+build everything in a single workspace:
 
 ```sh
 # Load your ROS installation, e.g. Foxy.
@@ -43,18 +43,22 @@ source /opt/ros/foxy/setup.bash
 # Replace <ARCH> with the name of the installed target libraries, e.g. x64Linux4gcc7.3.0
 source <NDDSHOME>/resource/scripts/rtisetenv_<ARCH>.bash
 
-# Create a workspace to build the RMW and enter it
-mkdir -p ws-connext-demos-rmw/src/ros2
+# Create a workspace and enter it
+mkdir -p ws-connext-demos-rmw/src
 
 cd ws-connext-demos-rmw
 
-# Clone and build rmw_connextdds (use `-b <branch>` to clone a branch for a
-# specific release, or leave it out to target Rolling)
-git clone -b foxy https://github.com/ros2/rmw_connextdds src/ros2/rmw_connextdds
+# Clone rmw_connextdds (use `-b <branch>` to clone a branch for a specific
+# release, or leave it out to target Rolling)
+git clone -b foxy https://github.com/ros2/rmw_connextdds src/rmw_connextdds
+
+# Clone the examples repository
+git clone https://github.com/asorbini/rticonnextdds-ros2-demos src/rticonnextdds-ros2-demos
 
 # If you have multiple target libraries installed you might need to select the
-# desired one with `--cmake-args -DCONNEXTDDS_ARCH=<ARCH>`
-colcon build --symlink-install
+# desired one with `--cmake-args -DCONNEXTDDS_ARCH=<ARCH>`.
+# Omit the `--package-skip` argument if you plan on using package `connext_msgs`.
+colcon build --symlink-install --packages-skip connext_msgs
 ```
 
 If your installation contains a binary version of `rmw_connextdds` built with
@@ -74,26 +78,6 @@ source <NDDSHOME>/resource/scripts/rtisetenv_<ARCH>.bash
 
 ...
 ```
-
-## Build examples
-
-After `rmw_connextdds` has been built with RTI Connext DDS 6.x, load it in the
-environment, and build the examples repository:
-
-```sh
-source ws-connext-demos-rmw/install/setup.bash
-
-mkdir -p ws-connext-demos/src/rti
-
-cd ws-connext-demos
-
-git clone https://github.com/asorbini/rticonnextdds-ros2-demos src/rti/rticonnextdds-ros2-demos
-
-colcon build --symlink-install --packages-skip connext_msgs
-```
-
-Omit the `--package-skip` argument if you are interested in building the
-`connext_msgs` package.
 
 ## Run examples
 
