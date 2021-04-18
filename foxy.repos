@@ -1,0 +1,15 @@
+repositories:
+  ros2/rmw_connextdds:
+    type: git
+    url: https://github.com/ros2/rmw_connextdds.git
+    version: foxy
+  
+  rti/rticonnextdds-ros2-demos:
+    type: git
+    url: https://github.com/asorbini/rticonnextdds-ros2-demos.git
+    version: master
+  
+  rti/rticonnextdds-ros2-helpers:
+    type: git
+    url: https://github.com/asorbini/rticonnextdds-ros2-helpers.git
+    version: master

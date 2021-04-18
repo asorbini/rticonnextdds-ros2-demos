@@ -1,37 +1,25 @@
 # Example ROS2 Applications using RTI Connext DDS
 
-This repository contains a collection of example ROS 2/Connext hybrid applications
-(`connext_cpp_nodes`), and some helper resources to simplify the implementation of
-this class of ROS 2 applications (`connext_node_helpers`).
-
-The repository also contains a helper library (`connext_msgs`) which contains
-RTI Connext DDS type support for most types included in the ROS 2 distribution.
+This repository contains a collection of  ROS 2 applications built using the
+RTI Connext DDS APIs.
 
 - [Build repository](#build-repository)
 - [Run examples](#run-examples)
-- [Package `connext_nodes_cpp`](#package-connext_nodes_cpp)
+- [Included examples](#included-examples)
   - [camera](#camera)
   - [processor_chatter](#processor_chatter)
   - [talker/listener](#talkerlistener)
-- [Package `connext_node_helpers`](#package-connext_node_helpers)
-  - [CMake Helpers](#cmake-helpers)
-    - [connext_generate_typesupport_library](#connext_generate_typesupport_library)
-    - [connext_generate_message_typesupport_cpp](#connext_generate_message_typesupport_cpp)
-    - [connext_components_register_node](#connext_components_register_node)
-    - [connext_add_executable](#connext_add_executable)
-- [Package `connext_msgs`](#package-connext_msgs)
-  - [Use DDS types in a ROS 2 application](#use-dds-types-in-a-ros-2-application)
-  - [Included packages](#included-packages)
-  - [Unsupported types](#unsupported-types)
+- [Other useful resource](#other-useful-resource)
 - [License](#license)
 
 ## Build repository
 
-All included packages require RTI Connext DDS 6.x, and generated applications
-can only be run using [`rmw_connextdds`](https://github.com/ros2/rmw_connextdds).
+The included applications require RTI Connext DDS 6.x, and they can only be
+run using [`rmw_connextdds`](https://github.com/ros2/rmw_connextdds) (with a
+few exceptions).
 
 Once RTI Connext DDS 6.x is installed, you can clone an build all required
-packages in a single workspace:
+packages in a single workspace using one of the provided `.repos` files:
 
 ```sh
 # Load your ROS installation, e.g. Foxy.
@@ -47,17 +35,13 @@ mkdir -p ws-connext/src
 
 cd ws-connext
 
-# Clone rmw_connextdds (use `-b <branch>` to clone a branch for a specific
-# release, or leave it out to target Rolling)
-git clone -b foxy https://github.com/ros2/rmw_connextdds src/rmw_connextdds
-
-# Clone the examples repository
-git clone https://github.com/asorbini/rticonnextdds-ros2-demos src/rticonnextdds-ros2-demos
+# Clone all required repositories using the included repos file
+wget https://raw.githubusercontent.com/asorbini/rticonnextdds-ros2-demos/master/foxy.repos
+vcs import src < foxy.repos
 
 # If you have multiple target libraries installed you might need to select the
 # desired one with `--cmake-args -DCONNEXTDDS_ARCH=<ARCH>`.
-# Omit the `--package-skip` argument if you plan on using package `connext_msgs`.
-colcon build --symlink-install --packages-skip connext_msgs
+colcon build --symlink-install
 ```
 
 If your installation contains a binary version of `rmw_connextdds` built with
@@ -96,7 +80,7 @@ ros2 run connext_nodes_cpp listener
 ./ws-connext/install/connext_nodes_cpp/bin/talker_main
 ```
 
-## Package `connext_nodes_cpp`
+## Included examples
 
 This package contains several example ROS 2/Connext hybrid applications.
 
@@ -244,303 +228,12 @@ ros2 run connext_nodes_cpp talker
 ros2 run demo_nodes_cpp listener
 ```
 
-## Package `connext_node_helpers`
-
-This package provides CMake and C++ helpers to facilitate the implementation of
-ROS 2 packages based on RTI Connext DDS.
-
-Add this package to your `package.xml`'s dependencies and then load it in your
-`CMakeLists.txt`:
-
-- `package.xml`:
-
-  ```xml
-  <package format="3">
-    <name>my_package</name>
-    
-    <!-- ... -->
-
-    <depend>connext_node_helpers</depend>
-  
-    <!-- ... -->
-  </package>
-  ```
-
-- `CMakeLists.txt`
-
-  ```cmake
-  cmake_minimum_required(VERSION 3.5)
-  project(my_package)
-
-  # ...
-
-  find_package(connext_node_helpers REQUIRED)
-
-  # ...
-  ```
-
-### CMake Helpers
-
-Once loaded in a `CMakeList.txt`, the module offers several CMake functions that
-can be used to facilitate some common build task for ROS 2 applications that
-want to use RTI Connext DDS.
-
-#### connext_generate_typesupport_library
-
-Generates a shared library containing DDS type support code from a list of ROS 2
-messages and (soon) services, but also regular Connext IDL files.
-
-This function takes a list of ROS 2 types and will generate a shared library
-after defining appropriate code generation targets for each type using
-[`connext_generate_message_typesupport_cpp`](#connext_generate_message_typesupport_cpp).
-
-*Example usage:*
-
-```cmake
-find_package(connext_node_helpers REQUIRED)
-find_package(std_msgs REQUIRED)
-find_package(sensor_msgs REQUIRED)
-find_package(builtin_interfaces REQUIRED)
-
-connext_generate_typesupport_library(my_connext_types_lib
-  MESSAGES
-    std_msgs/String
-    std_msgs/Header
-    builtin_interfaces/Time
-    sensor_msgs/PointField
-    sensor_msgs/PointCloud2
-  IDLS
-    idl/my/custom/ns/MyType.idl@my/custom/ns
-    idl/SomeTypesWithoutNamespace.idl
-  ZEROCOPY)
-```
-
-#### connext_generate_message_typesupport_cpp
-
-Generates type support code with `rtiddsgen` from a ROS 2 message definition.
-
-This is a "lower-level" helper which only defines a code generation target, and
-it will not actually build the generated files.
-
-The list of generated files is returned in an output variable `<pkg>_<type>_FILES`.
-Tt is up to the caller to consume it appropriately as part of an `add_executable()`
-or `add_library()` command.
-
-The compilation target will also need to be configured with the appropriate
-include directories. By default, all files will be generated in
-`${CMAKE_CURRENT_BINARY_DIR}/rtiddsgen/<pkg>`, and it is sufficient to add
-`${CMAKE_CURRENT_BINARY_DIR}/rtiddsgen` to the include path (since all files
-must always be included as `#include "<pkg>/<type>.idl"`).
-
-*Example usage:*
-
-```cmake
-find_package(connext_node_helpers REQUIRED)
-
-# Generate type support for type `std_msgs::msg::String`.
-# When using this syntax, the first argument is the "base name" of the type
-# and the PACKAGE argument must always be specified to qualify the type.
-# The list of generated files will be stored as `${std_msgs_String_FILES}`.
-# The generated code must be included with `#include "std_msgs/msg/String.hpp"`.
-find_package(std_msgs REQUIRED)
-connext_generate_message_typesupport_cpp(String PACKAGE std_msgs)
-
-# Generate type support from a typical IDL file for Connext.
-# In this case, the input is the path to the input file, and the
-# PACKAGE argument can be used to specify an optional "include prefix".
-
-# Generated files will be available as `${my_custom_ns_MyType_FILES}`
-# The generated code must be included with `#include "my/custom/ns/MyType.hpp"`.
-connext_generate_message_typesupport_cpp(idl/my/custom/ns/MyType.idl
-  PACKAGE my/custom/ns)
-
-# Generated files will be available as `${SomeTypesWithoutNamespace_FILES}`
-# The generated code must be included with `#include "SomeTypesWithoutNamespace.hpp"`.
-connext_generate_message_typesupport_cpp(idl/SomeTypesWithoutNamespace.idl)
-
-add_executable(my_app
-  main.c
-  ${std_msgs_String_FILES}
-  ${my_custom_ns_MyType_FILES}
-  ${SomeTypesWithoutNamespace_FILES})
-
-target_include_directories(my_app
-  PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/rtiddsgen)
-```
-
-#### connext_components_register_node
-
-Similar to `rclcpp_components_register_node()`, registers a node from a component
-library, and generates an executable to spin it in a `main()` function.
-
-This function differs from `rclcpp_components_register_node()` in that the
-generate executable will link RTI Connext DDS directly, and it will also be
-properly linked in order to allow sharing of the DomainParticipantFactory
-between the node component and the RMW.
-
-*Example usage:*
-
-```cmake
-find_package(connext_node_helpers REQUIRED)
-
-# First create a library with node components
-add_library(my_node_components SHARED
-  my_node.cpp)
-ament_target_dependencies(my_node_components
-  rclcpp
-  rclcpp_components)
-target_link_libraries(my_node_components
-  RTIConnextDDS::cpp2_api)
-
-# Then register each component into its own executable
-connext_components_register_node(my_node_components
-  PLUGIN "my_node::MyNode"
-  EXECUTABLE my_node)
-```
-
-#### connext_add_executable
-
-Build a ROS 2/DDS C++ application.
-
-This function can be used to simplify the definition of a build target for a
-ROS 2 C++ application that requires direct access to RTI Connext DDS. The
-function will take care of most boiler plate commands required to configure the
-target with the required dependencies and the appropriate linkage.
-
-*Example usage:*
-
-```cmake
-find_package(connext_node_helpers REQUIRED)
-find_package(std_msgs REQUIRED)
-
-# Generate type support files
-connext_generate_message_typesupport_cpp(String
-  PACKAGE std_msgs)
-
-# Build application and generated files
-connext_add_executable(
-  NAME my_app
-  SOURCES
-    my_app.cpp
-    ${std_msgs_String_FILES}
-  INCLUDES
-    ${CMAKE_CURRENT_BINARY_DIR}/rtiddsgen)
-```
-
-## Package `connext_msgs`
-
-Package `connext_msg` contains a collection of IDL files extracted from the
-ROS 2 Rolling distribution, and modified to compile with `rtiddsgen` so that
-they may be compiled into a single, ready-to-use shared library.
-
-Only IDL files for message types are included.
-
-The IDL files can be updated using script `copy_idls.sh`.
-
-The script will scan a ROS 2 installation, and it will copy all IDL files
-to the `./idl` directory. It will also perform some lightweight processing on
-the files to remove some incompatibilities.
-
-This package takes inspiration from repository [`rticommunity/ros-data-types`](https://github.com/rticommunity/ros-data-types),
-which offers a similar library that provides easy access to ROS 2 data types to
-any Connext application.
-
-### Use DDS types in a ROS 2 application
-
-Since `connext_msgs` is a regular ROS 2 package, you can just add it to your
-`package.xml` dependencies, and load it in your `CMakeLists.txt` like any other
-package and library:
-
-- `package.xml`:
-
-  ```xml
-  <package format="3">
-    <name>my_package</name>
-    
-    <!-- ... -->
-
-    <depend>connext_msgs</depend>
-  
-    <!-- ... -->
-  </package>
-  ```
-
-- `CMakeLists.txt`
-
-  ```cmake
-  cmake_minimum_required(VERSION 3.5)
-  project(my_package)
-
-  # ...
-
-  # Load package
-  find_package(connext_msgs REQUIRED)
-
-  # ...
-
-  # Add dependency to your targets
-  ament_target_dependencies(my_target  connext_msgs)
-  ament_export_dependencies(connext_msgs)
-
-  ```
-
-In oder to you the types, you must `#include` the appropriate file in your C++
-code. The path is slightly different from the one used for standard ROS 2 messages,
-in that the file name is not converted to all lowercase and "snake case" format,
-instead retaining the same name as the input `.idl`.
-
-For example, in order to use type `sensor_msgs::msg::PointCloud`:
-
-```cpp
-// typical ROS 2 include
-#include "sensor_msgs/msg/point_cloud.hpp"
-
-// DDS type include
-#include "sensor_msgs/msg/PointCloud.hpp"
-```
-
-### Included packages
-
-Types from the following packages are currently included in the library:
-
-```txt
-actionlib_msgs           nav_msgs         std_msgs
-action_msgs              pcl_msgs         stereo_msgs
-builtin_interfaces       pendulum_msgs    test_msgs
-diagnostic_msgs          rcl_interfaces   tf2_msgs
-example_interfaces       rmw_dds_common   trajectory_msgs
-geometry_msgs            rosgraph_msgs    turtlesim
-libstatistics_collector  sensor_msgs      unique_identifier_msgs
-lifecycle_msgs           shape_msgs       visualization_msgs
-map_msgs                 statistics_msgs
-```
-
-### Unsupported types
-
-The following types are currently unsupported, typically because their IDL files
-contain multiple nested `#include`'s of the same file:
-
-```txt
-actionlib_msgs/GoalStatusArray
-map_msgs/ProjectedMap
-nav_msgs/OccupancyGrid
-nav_msgs/Odometry
-sensor_msgs/MultiDOFJointState
-test_msgs/Arrays
-test_msgs/BoundedSequences
-test_msgs/Defaults
-test_msgs/MultiNested
-test_msgs/UnboundedSequences
-trajectory_msgs/MultiDOFJointTrajectory
-trajectory_msgs/MultiDOFJointTrajectoryPoint
-visualization_msgs/InteractiveMarker
-visualization_msgs/InteractiveMarkerControl
-visualization_msgs/InteractiveMarkerFeedback
-visualization_msgs/InteractiveMarkerInit
-visualization_msgs/InteractiveMarkerUpdate
-visualization_msgs/Marker
-visualization_msgs/MarkerArray
-```
+## Other useful resource
+
+| Link | Description |
+|------|-------------|
+|[`rticonnextdds-ros2-helpers`](https://github.com/asorbini/rticonnextdds-ros2-helpers)| A collection of utilities to built ROS 2 applications with RTI Connext DDS. Used extensively by the demos in this repository|
+|[`rticonnextdds-ros2-msgs`](https://github.com/asorbini/rticonnextdds-ros2-msgs)|A helper library containing C++11 message type supports generated with `rtiddsgen` for almost every type include in ROS 2|
 
 ## License
 
