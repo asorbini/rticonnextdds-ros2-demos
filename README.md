@@ -458,6 +458,10 @@ The script will scan a ROS 2 installation, and it will copy all IDL files
 to the `./idl` directory. It will also perform some lightweight processing on
 the files to remove some incompatibilities.
 
+This package takes inspiration from repository [`rticommunity/ros-data-types`](https://github.com/rticommunity/ros-data-types),
+which offers a similar library that provides easy access to ROS 2 data types to
+any Connext application.
+
 ### Use DDS types in a ROS 2 application
 
 Since `connext_msgs` is a regular ROS 2 package, you can just add it to your
