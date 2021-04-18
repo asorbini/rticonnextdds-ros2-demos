@@ -7,7 +7,7 @@ this class of ROS 2 applications (`connext_node_helpers`).
 The repository also contains a helper library (`connext_msgs`) which contains
 RTI Connext DDS type support for most types included in the ROS 2 distribution.
 
-- [Build dependencies](#build-dependencies)
+- [Build repository](#build-repository)
 - [Run examples](#run-examples)
 - [Package `connext_nodes_cpp`](#package-connext_nodes_cpp)
   - [camera](#camera)
@@ -25,14 +25,13 @@ RTI Connext DDS type support for most types included in the ROS 2 distribution.
   - [Unsupported types](#unsupported-types)
 - [License](#license)
 
-## Build dependencies
+## Build repository
 
-All example application require RTI Connext DDS 6.x and can only be run using
-[`rmw_connextdds`](https://github.com/ros2/rmw_connextdds).
+All included packages require RTI Connext DDS 6.x, and generated applications
+can only be run using [`rmw_connextdds`](https://github.com/ros2/rmw_connextdds).
 
-Once RTI Connext DDS 6.x is installed, build `rmw_connextdds` with it in a
-dedicated workspace (and then source it before building this repository), or
-build everything in a single workspace:
+Once RTI Connext DDS 6.x is installed, you can clone an build all required
+packages in a single workspace:
 
 ```sh
 # Load your ROS installation, e.g. Foxy.
