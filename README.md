@@ -4,7 +4,7 @@ This repository contains a collection of example ROS 2/Connext hybrid applicatio
 (`connext_cpp_nodes`), and some helper resources to simplify the implementation of
 this class of ROS 2 applications (`connext_node_helpers`).
 
-The repository also contains a helper library, `connext_msgs`, which contains
+The repository also contains a helper library (`connext_msgs`) which contains
 RTI Connext DDS type support for most types included in the ROS 2 distribution.
 
 - [Build dependencies](#build-dependencies)
