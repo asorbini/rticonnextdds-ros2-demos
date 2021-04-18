@@ -9,7 +9,7 @@ RTI Connext DDS APIs.
   - [camera](#camera)
   - [processor_chatter](#processor_chatter)
   - [talker/listener](#talkerlistener)
-- [Other useful resource](#other-useful-resource)
+- [Other useful resources](#other-useful-resources)
 - [License](#license)
 
 ## Build repository
@@ -228,7 +228,7 @@ ros2 run connext_nodes_cpp talker
 ros2 run demo_nodes_cpp listener
 ```
 
-## Other useful resource
+## Other useful resources
 
 | Link | Description |
 |------|-------------|
