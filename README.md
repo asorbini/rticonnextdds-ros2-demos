@@ -8,10 +8,9 @@ this class of ROS 2 applications (`connext_node_helpers`).
 - [Build examples](#build-examples)
 - [Run examples](#run-examples)
 - [Package `connext_nodes_cpp`](#package-connext_nodes_cpp)
-  - [Included Examples](#included-examples)
-    - [camera](#camera)
-    - [processor_chatter](#processor_chatter)
-    - [talker/listener](#talkerlistener)
+  - [camera](#camera)
+  - [processor_chatter](#processor_chatter)
+  - [talker/listener](#talkerlistener)
 - [Package `connext_node_helpers`](#package-connext_node_helpers)
   - [CMake Helpers](#cmake-helpers)
     - [connext_generate_typesupport_library](#connext_generate_typesupport_library)
@@ -108,13 +107,11 @@ ros2 run connext_nodes_cpp listener
 
 This package contains several example ROS 2/Connext hybrid applications.
 
-### Included Examples
-
 Most examples are available both as a stand-alone executable and as an `rclcpp`
 component. When built as a stand-alone executable, the generated binary will
 use the `_main` suffix to differentiate it from the "component-ized" version.
 
-#### camera
+### camera
 
 This set of examples demonstrate the effects of using the Flat-Data and Zero-Copy
 fetures provided by RTI Connext DDS.
@@ -185,7 +182,7 @@ ros2 run connext_nodes_cpp camera_pub_flat_zc
 ros2 run connext_nodes_cpp camera_sub_flat_zc
 ```
 
-#### processor_chatter
+### processor_chatter
 
 This example uses the interfaces offered by [connext_nodes/processor.hpp](connext_node_helpers/include/connext_nodes/processor.hpp)
 to implement a simple "processor" node for topic `"chatter"`. A "processor" in this context
@@ -220,7 +217,7 @@ ros2 run connext_nodes_cpp talker
 ./install/connext_nodes_cpp/bin/processor_chatter_dds
 ```
 
-#### talker/listener
+### talker/listener
 
 These examples mimic the `talker` and `listener` applications included in package
 `demo_nodes_cpp`, but they use the RTI Connext DDS C++11 API to create DDS endpoint
