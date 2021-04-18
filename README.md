@@ -43,9 +43,9 @@ source /opt/ros/foxy/setup.bash
 source <NDDSHOME>/resource/scripts/rtisetenv_<ARCH>.bash
 
 # Create a workspace and enter it
-mkdir -p ws-connext-demos-rmw/src
+mkdir -p ws-connext/src
 
-cd ws-connext-demos-rmw
+cd ws-connext
 
 # Clone rmw_connextdds (use `-b <branch>` to clone a branch for a specific
 # release, or leave it out to target Rolling)
@@ -85,7 +85,7 @@ while other examples are provided as `rclcpp` components that can be run with
 `ros2 run`. All examples must be run with `rmw_connextdds` as the RMW implementation:
 
 ```sh
-source ws-connext-demos/install/setup.bash
+source ws-connext/install/setup.bash
 
 export RMW_IMPLEMENTATION=rmw_connextdds
 
@@ -93,7 +93,7 @@ export RMW_IMPLEMENTATION=rmw_connextdds
 ros2 run connext_nodes_cpp listener
 
 # Run a stand-alone example
-./ws-connext-demos/install/connext_nodes_cpp/bin/talker_main
+./ws-connext/install/connext_nodes_cpp/bin/talker_main
 ```
 
 ## Package `connext_nodes_cpp`
