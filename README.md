@@ -137,7 +137,11 @@ Zero-Copy. Similarly, a Flat-Data/Zero-Copy endpoint may communicate with a
 Zero-Copy endpoint using plain memory representation, but samples will require
 to be copied into the receivers cache in order to enable interoperability.
 
+These examples can also be run with RMW implementations other than `rmw_connextdds`,
+in which case they will create a dedicated DomainParticipant using RTI Connext DDS.
+
 | Example | Description |
+|---------|-------------|
 |[camera_pub_plain.cpp](connext_nods_cpp/src/camera/camera_pub_plain.cpp) | Publisher using plain memory representation, and default transport |
 |[camera_pub_flat.cpp](connext_nods_cpp/src/camera/camera_pub_flat.cpp) | Publisher using Flat-Data memory representation, and default transport |
 |[camera_pub_flat_zc.cpp](connext_nods_cpp/src/camera/camera_pub_flat_zc.cpp) | Publisher using Flat-Data memory representation, and Zero-Copy transport |
@@ -146,6 +150,40 @@ to be copied into the receivers cache in order to enable interoperability.
 |[camera_sub_flat.cpp](connext_nods_cpp/src/camera/camera_sub_flat.cpp) | Subscriber using Flat-Data memory representation, and default transport |
 |[camera_sub_flat_zc.cpp](connext_nods_cpp/src/camera/camera_sub_flat_zc.cpp) | Subscriber using Flat-Data memory representation, and Zero-Copy transport |
 |[camera_sub_zc.cpp](connext_nods_cpp/src/camera/camera_sub_zc.cpp) | Subscriber using plain memory representation, and Zero-Copy transport |
+
+*Example usage:*
+
+- Slow: [Plain, Default] to [Plain, Default]
+
+```sh
+ros2 run connext_nodes_cpp camera_pub_plain
+
+ros2 run connext_nodes_cpp camera_sub_plain
+```
+
+- Slow: [Flat-Data, Default] to [Flat-Data, Default]
+
+```sh
+ros2 run connext_nodes_cpp camera_pub_flat
+
+ros2 run connext_nodes_cpp camera_sub_flat
+```
+
+- Fast: [Plain, Zero-Copy] to [Plain, Zero-Copy]
+
+```sh
+ros2 run connext_nodes_cpp camera_pub_zc
+
+ros2 run connext_nodes_cpp camera_sub_zc
+```
+
+- Fast: [Flat-Data, Zero-Copy] to [Flat-Data, Zero-Copy]
+
+```sh
+ros2 run connext_nodes_cpp camera_pub_flat_zc
+
+ros2 run connext_nodes_cpp camera_sub_flat_zc
+```
 
 #### processor_chatter
 
@@ -169,6 +207,19 @@ from template class `rti::ros2::DdsProcessorNode`), and one which uses
 |[processor_chatter.hpp](connext_nodes_cpp/src/processor/processor_chatter.hpp)|Middleware-agnostic message processing logic.|
 |[processor_chatter.cpp](connext_nodes_cpp/src/processor/processor_chatter.cpp)|`main()` entry point for the generated executables.|
 
+*Example usage:*
+
+```sh
+# Use rtiddsspy to print processed samples
+rtiddspy -printSample
+
+# Start a talker on topic "rt/chatter"
+ros2 run connext_nodes_cpp talker
+
+# Process samples using the DDS-based version
+./install/connext_nodes_cpp/bin/processor_chatter_dds
+```
+
 #### talker/listener
 
 These examples mimic the `talker` and `listener` applications included in package
@@ -185,6 +236,15 @@ automatically converted from ROS IDL to OMG IDL by the ROS 2 build process.
 |[talker_main.cpp](connext_nodes_cpp/src/standalone/talker_main.cpp)| Stand-alone version of [talker.cpp](connext_nodes_cpp/src/chatter/talker.cpp)|
 |[listener_main.cpp](connext_nodes_cpp/src/standalone/listener_main.cpp)| Stand-alone version of [listener.cpp](connext_nodes_cpp/src/chatter/listener.cpp)|
 
+*Example usage:*
+
+```sh
+# Start a DDS talker on topic "chatter"
+ros2 run connext_nodes_cpp talker
+
+# Consume data with a ROS 2 listener
+ros2 run demo_nodes_cpp listener
+```
 
 ## Package `connext_node_helpers`
 
