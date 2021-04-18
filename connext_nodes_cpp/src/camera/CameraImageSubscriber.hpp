@@ -11,61 +11,29 @@
 #ifndef CameraImageSubscriber_hpp_
 #define CameraImageSubscriber_hpp_
 
-#include "CameraImageTester.hpp"
+#include "PingPongTester.hpp"
+
+#include "CameraImageManipulator.hpp"
 
 namespace rti { namespace connext_nodes_cpp {
 
 template<typename T, typename M, typename A>
-class CameraImageSubscriber : public CameraImageTester<T, M, A>
+class CameraImageSubscriber : public PingPongTester<T, A>
 {
 public:
   CONNEXT_NODES_CPP_PUBLIC
   CameraImageSubscriber(
     const char * const name,
-    const rclcpp::NodeOptions & options,
-    const CameraImageTestOptions & test_options = CameraImageTestOptions::defaults())
-  : CameraImageTester<T, M, A>(name, options, test_options)
+    const rclcpp::NodeOptions & options)
+  : PingPongTester<T, A>(name, options, false /* pong */)
   {
-    this->init_test(
-      // pong writer configuration
-      this->test_options_.topic_name_pong,
-      this->test_options_.type_name,
-      this->test_options_.qos_profile,
-      // ping reader configuration
-      this->test_options_.topic_name_ping,
-      this->test_options_.type_name,
-      this->test_options_.qos_profile);
-    
     RCLCPP_INFO(this->get_logger(),
       "camera subscriber ready, waiting for publisher...");
   }
 
 protected:
-  virtual void on_test_state_changed(
-    const size_t pub_match_count,
-    const size_t sub_match_count,
-    const bool was_active,
-    const bool is_ready,
-    bool & is_active)
-  {
-    if (is_ready) {
-      if (!was_active) {
-        RCLCPP_INFO(this->get_logger(), "all endpoints matched, beginning test");
-        is_active = true;
-      }
-    } else {
-      if (!was_active) {
-        RCLCPP_INFO(this->get_logger(),
-          "match event detected: ping_reader=%lu, pong_writer=%lu",
-          pub_match_count, sub_match_count);
-      } else {
-        RCLCPP_ERROR(this->get_logger(), "lost matches, shutting down");
-        is_active = false;
-      }
-    }
-  }
-
-  virtual void on_data()
+  // Overload `on_data_available()` to propagate ping sample to the pong topic.
+  virtual void on_data_available()
   {
     // Read pong sample and calculate latency
     auto ping_samples = this->reader_.take();
@@ -73,11 +41,6 @@ protected:
     const bool has_data = ping_samples.length() > 0;
     if (has_data && ping_samples[0].info().valid()) {
       auto sample = ping_samples[0];
-      if (!this->test_active_) {
-        RCLCPP_WARN(this->get_logger(),
-          "ping received while test not yet active");
-      }
-
       auto ping_ts = M::timestamp(sample.data());
 
       if (ping_ts == 0) {
@@ -86,7 +49,7 @@ protected:
         return;
       }
 
-      if (this->test_options_.display_samples_recvd) {
+      if (this->test_options_.display_received) {
         std::ostringstream msg;
         msg << "[CameraImage] " <<
           "[" << M::timestamp(sample.data()) << "] " << 
@@ -104,7 +67,8 @@ protected:
         RCLCPP_INFO(this->get_logger(), msg.str().c_str());
       }
 
-      auto pong = A::alloc(this->writer_, this->cached_sample_);
+      // Send back the timestamp to the writer.
+      auto pong = this->alloc_sample();
       M::timestamp(*pong, ping_ts);
       this->writer_.write(*pong);
     } else if (has_data && !ping_samples[0].info().valid()) {
@@ -115,16 +79,16 @@ protected:
 };
 
 template<typename T>
-using BaseCameraImageSubscriberPlain = CameraImageSubscriber<T, CameraImageManipulatorPlain<T>, CameraImageAllocatorDynamic<T>>;
+using BaseCameraImageSubscriberPlain = CameraImageSubscriber<T, CameraImageManipulatorPlain<T>, DataAllocatorDynamic<T>>;
 
 template<typename T>
-using BaseCameraImageSubscriberFlat = CameraImageSubscriber<T, CameraImageManipulatorFlat<T>, CameraImageAllocatorWriter<T>>;
+using BaseCameraImageSubscriberFlat = CameraImageSubscriber<T, CameraImageManipulatorFlat<T>, DataAllocatorLoan<T>>;
 
 template<typename T>
-using BaseCameraImageSubscriberFlatZc = CameraImageSubscriber<T, CameraImageManipulatorFlat<T>, CameraImageAllocatorWriter<T>>;
+using BaseCameraImageSubscriberFlatZc = CameraImageSubscriber<T, CameraImageManipulatorFlat<T>, DataAllocatorLoan<T>>;
 
 template<typename T>
-using BaseCameraImageSubscriberZc = CameraImageSubscriber<T, CameraImageManipulatorPlain<T>, CameraImageAllocatorWriter<T>>;
+using BaseCameraImageSubscriberZc = CameraImageSubscriber<T, CameraImageManipulatorPlain<T>, DataAllocatorLoan<T>>;
 
 }  // namespace connext_nodes_cpp
 }  // namespace rti

@@ -9,8 +9,9 @@ this class of ROS 2 applications (`connext_node_helpers`).
 - [Run examples](#run-examples)
 - [Package `connext_nodes_cpp`](#package-connext_nodes_cpp)
   - [Included Examples](#included-examples)
-    - [talker/listener](#talkerlistener)
+  - [camera](#camera)
     - [processor_chatter](#processor_chatter)
+    - [talker/listener](#talkerlistener)
 - [Package `connext_node_helpers`](#package-connext_node_helpers)
   - [CMake Helpers](#cmake-helpers)
     - [connext_generate_typesupport_library](#connext_generate_typesupport_library)
@@ -113,21 +114,38 @@ Most examples are available both as a stand-alone executable and as an `rclcpp`
 component. When built as a stand-alone executable, the generated binary will
 use the `_main` suffix to differentiate it from the "component-ized" version.
 
-#### talker/listener
+### camera
 
-These examples mimic the `talker` and `listener` applications included in package
-`demo_nodes_cpp`, but they use the RTI Connext DDS C++11 API to create DDS endpoint
-that can interoperate over the ROS 2 topic `"chatter"`.
+This set of examples demonstrate the effects of using the Flat-Data and Zero-Copy
+fetures provided by RTI Connext DDS.
 
-The endpoints are created reusing the type definition of `std_msgs::msg::String``
-automatically converted from ROS IDL to OMG IDL by the ROS 2 build process.
+The examples perform a simple latency test between a publisher and a subscriber
+applications. After starting the applications, the publisher will send a large
+timestamped message to the subscriber, and wait for it to be echoed back to
+calculate roundtrip latency. The roundtrip time is then halved and a running
+average will be printed periodically.
 
-| Example | Description   |
-|---------|---------------|
-|[talker.cpp](connext_nodes_cpp/src/chatter/talker.cpp)| Connext-based version of [demo_nodes_cpp/src/topics/talker.cpp](https://github.com/ros2/demos/blob/master/demo_nodes_cpp/src/topics/talker.cpp)|
-|[listener.cpp](connext_nodes_cpp/src/chatter/listener.cpp)| Connext-based version of [demo_nodes_cpp/src/topics/listener.cpp](https://github.com/ros2/demos/blob/master/demo_nodes_cpp/src/topics/listener.cpp)|
-|[talker_main.cpp](connext_nodes_cpp/src/standalone/talker_main.cpp)| Stand-alone version of [talker.cpp](connext_nodes_cpp/src/chatter/talker.cpp)|
-|[listener_main.cpp](connext_nodes_cpp/src/standalone/listener_main.cpp)| Stand-alone version of [listener.cpp](connext_nodes_cpp/src/chatter/listener.cpp)|
+The testers applications are provided in different variants, each one using a
+different memory binding (plain, or Flat-Data), and a different transfer method
+(default, or Zero-Copy). Each version can communicate with the others,
+regardless of enabled features, but the resulting performance will depend on
+runtime negotiation of available features.
+
+For example, a Zero-Copy subscriber will be able to receive samples from a
+regular writer, but communication will not be able to take advantage of
+Zero-Copy. Similarly, a Flat-Data/Zero-Copy endpoint may communicate with a
+Zero-Copy endpoint using plain memory representation, but samples will require
+to be copied into the receivers cache in order to enable interoperability.
+
+| Example | Description |
+|[camera_pub_plain.cpp](connext_nods_cpp/src/camera/camera_pub_plain.cpp) | Publisher using plain memory representation, and default transport |
+|[camera_pub_flat.cpp](connext_nods_cpp/src/camera/camera_pub_flat.cpp) | Publisher using Flat-Data memory representation, and default transport |
+|[camera_pub_flat_zc.cpp](connext_nods_cpp/src/camera/camera_pub_flat_zc.cpp) | Publisher using Flat-Data memory representation, and Zero-Copy transport |
+|[camera_pub_zc.cpp](connext_nods_cpp/src/camera/camera_pub_zc.cpp) | Publisher using plain memory representation, and Zero-Copy transport |
+|[camera_sub_plain.cpp](connext_nods_cpp/src/camera/camera_sub_plain.cpp) | Subscriber using plain memory representation, and default transport |
+|[camera_sub_flat.cpp](connext_nods_cpp/src/camera/camera_sub_flat.cpp) | Subscriber using Flat-Data memory representation, and default transport |
+|[camera_sub_flat_zc.cpp](connext_nods_cpp/src/camera/camera_sub_flat_zc.cpp) | Subscriber using Flat-Data memory representation, and Zero-Copy transport |
+|[camera_sub_zc.cpp](connext_nods_cpp/src/camera/camera_sub_zc.cpp) | Subscriber using plain memory representation, and Zero-Copy transport |
 
 #### processor_chatter
 
@@ -150,6 +168,22 @@ from template class `rti::ros2::DdsProcessorNode`), and one which uses
 |[processor_chatter_ros.hpp](connext_nodes_cpp/src/processor/processor_chatter_ros.hpp)|Instantiation of `rti::ros2::RosProcessorNode<std_msgs::msg::String, std_msgs::msg::String>` for topics `"chatter"`/`"chatter/processed"`.|
 |[processor_chatter.hpp](connext_nodes_cpp/src/processor/processor_chatter.hpp)|Middleware-agnostic message processing logic.|
 |[processor_chatter.cpp](connext_nodes_cpp/src/processor/processor_chatter.cpp)|`main()` entry point for the generated executables.|
+
+#### talker/listener
+
+These examples mimic the `talker` and `listener` applications included in package
+`demo_nodes_cpp`, but they use the RTI Connext DDS C++11 API to create DDS endpoint
+that can interoperate over the ROS 2 topic `"chatter"`.
+
+The endpoints are created reusing the type definition of `std_msgs::msg::String``
+automatically converted from ROS IDL to OMG IDL by the ROS 2 build process.
+
+| Example | Description   |
+|---------|---------------|
+|[talker.cpp](connext_nodes_cpp/src/chatter/talker.cpp)| Connext-based version of [demo_nodes_cpp/src/topics/talker.cpp](https://github.com/ros2/demos/blob/master/demo_nodes_cpp/src/topics/talker.cpp)|
+|[listener.cpp](connext_nodes_cpp/src/chatter/listener.cpp)| Connext-based version of [demo_nodes_cpp/src/topics/listener.cpp](https://github.com/ros2/demos/blob/master/demo_nodes_cpp/src/topics/listener.cpp)|
+|[talker_main.cpp](connext_nodes_cpp/src/standalone/talker_main.cpp)| Stand-alone version of [talker.cpp](connext_nodes_cpp/src/chatter/talker.cpp)|
+|[listener_main.cpp](connext_nodes_cpp/src/standalone/listener_main.cpp)| Stand-alone version of [listener.cpp](connext_nodes_cpp/src/chatter/listener.cpp)|
 
 
 ## Package `connext_node_helpers`
