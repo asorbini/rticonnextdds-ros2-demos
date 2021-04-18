@@ -28,7 +28,7 @@ public:
 
 protected:
   // Helper function to fill in the contents of a sample
-  virtual void prepare_ping(T * const sample, const bool final) = 0;
+  virtual void prepare_ping(T & sample, const bool final) = 0;
 
   // Process received pong sample and return the timestamp
   virtual void process_pong(
@@ -98,7 +98,7 @@ protected:
     // Allocate a sample and prepare it for publishing
     auto sample = this->alloc_sample();
 
-    prepare_ping(sample, final);
+    prepare_ping(*sample, final);
     
     // Write the sample out
     this->writer_.write(*sample);

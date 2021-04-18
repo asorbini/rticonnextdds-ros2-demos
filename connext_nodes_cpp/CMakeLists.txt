@@ -160,11 +160,12 @@ add_library(camera_components SHARED
   src/camera/camera_sub_flat_zc.cpp
   src/camera/camera_sub_plain.cpp
   src/camera/camera_sub_zc.cpp
-  src/camera/CameraImageManipulator.hpp
   src/camera/CameraImagePublisher.hpp
   src/camera/CameraImageSubscriber.hpp
   src/camera/DataAllocator.hpp
+  src/camera/DataManipulator.hpp
   src/camera/PingPongPublisher.hpp
+  src/camera/PingPongSubscriber.hpp
   src/camera/PingPongTester.hpp)
 ament_target_dependencies(camera_components
   rclcpp

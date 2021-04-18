@@ -13,7 +13,7 @@
 
 #include "PingPongPublisher.hpp"
 
-#include "CameraImageManipulator.hpp"
+#include "DataManipulator.hpp"
 
 namespace rti { namespace connext_nodes_cpp {
 
@@ -31,25 +31,25 @@ public:
   }
 
 protected:
-  virtual void prepare_ping(T * const sample, const bool final)
+  virtual void prepare_ping(T & ping, const bool final)
   {
     if (final) {
-      M::timestamp(*sample, 0);
+      M::get(ping).timestamp(0);
       return;
     }
-
-    M::format(*sample, camera::common::Format::RGB);
-    M::resolution_height(*sample, camera::common::CAMERA_HEIGHT_DEFAULT);
-    M::resolution_width(*sample, camera::common::CAMERA_WIDTH_DEFAULT);
-
+    
+    M::get(ping).format(camera::common::Format::RGB);
+    M::get(ping).resolution().height(camera::common::CAMERA_HEIGHT_DEFAULT);
+    M::get(ping).resolution().width(camera::common::CAMERA_WIDTH_DEFAULT);
+    
     // Just set the first 4 bytes
     for (int i = 0; i < 4; i++) {
       uint8_t image_value = (48 + this->count_) % 124;
-      M::data(*sample, i, image_value);
+      M::array::set(M::get(ping).data(), i, image_value);
     }
-
+    
     // Update timestamp
-    M::timestamp(*sample, this->participant_->current_time().to_microsecs());
+    M::get(ping).timestamp(this->participant_->current_time().to_microsecs());
   }
 
   // Process received pong sample and return the timestamp
@@ -57,21 +57,21 @@ protected:
     dds::sub::LoanedSamples<T> & pong_samples,
     uint64_t & pong_timestamp)
   {
-    pong_timestamp = M::timestamp(pong_samples[0].data());
+    pong_timestamp = M::get(pong_samples[0].data()).timestamp();
   }
 };
 
 template<typename T>
-using BaseCameraImagePublisherPlain = CameraImagePublisher<T, CameraImageManipulatorPlain<T>, DataAllocatorDynamic<T>>;
+using BaseCameraImagePublisherPlain = CameraImagePublisher<T, DataManipulatorPlain<T>, DataAllocatorDynamic<T>>;
 
 template<typename T>
-using BaseCameraImagePublisherFlat = CameraImagePublisher<T, CameraImageManipulatorFlat<T>, DataAllocatorLoan<T>>;
+using BaseCameraImagePublisherFlat = CameraImagePublisher<T, DataManipulatorFlat<T>, DataAllocatorLoan<T>>;
 
 template<typename T>
-using BaseCameraImagePublisherFlatZc = CameraImagePublisher<T, CameraImageManipulatorFlat<T>, DataAllocatorLoan<T>>;
+using BaseCameraImagePublisherFlatZc = CameraImagePublisher<T, DataManipulatorFlat<T>, DataAllocatorLoan<T>>;
 
 template<typename T>
-using BaseCameraImagePublisherZc = CameraImagePublisher<T, CameraImageManipulatorPlain<T>, DataAllocatorLoan<T>>;
+using BaseCameraImagePublisherZc = CameraImagePublisher<T, DataManipulatorPlain<T>, DataAllocatorLoan<T>>;
 
 }  // namespace connext_nodes_cpp
 }  // namespace rti

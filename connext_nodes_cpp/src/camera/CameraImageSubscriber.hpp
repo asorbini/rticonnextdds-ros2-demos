@@ -13,7 +13,7 @@
 
 #include "PingPongSubscriber.hpp"
 
-#include "CameraImageManipulator.hpp"
+#include "DataManipulator.hpp"
 
 namespace rti { namespace connext_nodes_cpp {
 
@@ -33,30 +33,32 @@ public:
 protected:
   virtual void prepare_pong(T * const pong, const uint64_t ping_ts)
   {
-    M::timestamp(*pong, ping_ts);
+    M::get(*pong).timestamp(ping_ts);
   }
 
   virtual void process_ping(
     dds::sub::LoanedSamples<T> & ping_samples,
-    uint64_t & pong_timestamp)
+    uint64_t & ping_timestamp)
   {
-    pong_timestamp = M::timestamp(ping_samples[0].data());
+    ping_timestamp = M::get(ping_samples[0].data()).timestamp();
   }
 
   virtual void dump_ping(
     dds::sub::LoanedSamples<T> & ping_samples,
     std::ostringstream & msg)
   {
-    auto sample = ping_samples[0];
+    auto & sample = ping_samples[0].data();
 
-    msg << "[" << M::timestamp(sample.data()) << "] " << 
-      "" << M::format(sample.data());
+    msg << "[" << M::get(sample).timestamp() << "] " <<  M::get(sample).format();
 
     for (int i = 0; i < 4; i++) {
+        const uint8_t * el;
+        M::array::ref(M::get(sample).data(), i, el);
+
         msg << "0x" << 
           std::hex << std::uppercase <<
           std::setfill('0') << std::setw(2) <<
-          (int) M::data(sample.data(), i) <<
+          (int) *el <<
           std::nouppercase << std::dec <<
           " ";
     }
@@ -64,16 +66,16 @@ protected:
 };
 
 template<typename T>
-using BaseCameraImageSubscriberPlain = CameraImageSubscriber<T, CameraImageManipulatorPlain<T>, DataAllocatorDynamic<T>>;
+using BaseCameraImageSubscriberPlain = CameraImageSubscriber<T, DataManipulatorPlain<T>, DataAllocatorDynamic<T>>;
 
 template<typename T>
-using BaseCameraImageSubscriberFlat = CameraImageSubscriber<T, CameraImageManipulatorFlat<T>, DataAllocatorLoan<T>>;
+using BaseCameraImageSubscriberFlat = CameraImageSubscriber<T, DataManipulatorFlat<T>, DataAllocatorLoan<T>>;
 
 template<typename T>
-using BaseCameraImageSubscriberFlatZc = CameraImageSubscriber<T, CameraImageManipulatorFlat<T>, DataAllocatorLoan<T>>;
+using BaseCameraImageSubscriberFlatZc = CameraImageSubscriber<T, DataManipulatorFlat<T>, DataAllocatorLoan<T>>;
 
 template<typename T>
-using BaseCameraImageSubscriberZc = CameraImageSubscriber<T, CameraImageManipulatorPlain<T>, DataAllocatorLoan<T>>;
+using BaseCameraImageSubscriberZc = CameraImageSubscriber<T, DataManipulatorPlain<T>, DataAllocatorLoan<T>>;
 
 }  // namespace connext_nodes_cpp
 }  // namespace rti
