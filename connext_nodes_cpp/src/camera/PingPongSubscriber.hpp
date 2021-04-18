@@ -24,10 +24,7 @@ public:
     const char * const name,
     const rclcpp::NodeOptions & options)
   : PingPongTester<T, A>(name, options, false /* pong */)
-  {
-    RCLCPP_INFO(this->get_logger(),
-      "ping-pong subscriber ready, waiting for publisher...");
-  }
+  {}
 
 protected:
   // Helper function to fill in the contents of a pong
@@ -42,6 +39,14 @@ protected:
   virtual void dump_ping(
     dds::sub::LoanedSamples<T> & ping_samples,
     std::ostringstream & msg) = 0;
+
+  virtual void init_test()
+  {
+    PingPongTester<T, A>::init_test();
+
+    RCLCPP_INFO(this->get_logger(),
+      "ping-pong subscriber ready, waiting for publisher...");
+  }
 
   // Overload `on_data_available()` to propagate ping sample to the pong topic.
   virtual void on_data_available()

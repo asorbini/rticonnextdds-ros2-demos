@@ -26,7 +26,9 @@ public:
     const char * const name,
     const rclcpp::NodeOptions & options)
   : PingPongSubscriber<T, A>(name, options)
-  {}
+  {
+    this->init_test();
+  }
 
 protected:
   virtual void prepare_pong(T * const pong, const uint64_t ping_ts)

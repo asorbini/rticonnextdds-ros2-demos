@@ -26,7 +26,9 @@ public:
     const char * const name,
     const rclcpp::NodeOptions & options)
   : PingPongPublisher<T, A>(name, options)
-  {}
+  {
+    this->init_test();
+  }
 
 protected:
   virtual void prepare_ping(T * const sample, const bool final)

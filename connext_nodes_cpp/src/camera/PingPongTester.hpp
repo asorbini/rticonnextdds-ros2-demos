@@ -46,9 +46,9 @@ struct PingPongTesterOptions
     node->declare_parameter("max_execution_time", 30000000 /* 30s */);
     node->declare_parameter("ignored_initial_samples", 3);
     node->declare_parameter("print_interval", 1000000 /* 1s */);
-    node->declare_parameter("type_name", "CameraImage");
-    node->declare_parameter("topic_name_ping", "CameraImagePing");
-    node->declare_parameter("topic_name_pong", "CameraImagePong");
+    node->declare_parameter("type_name", "PingPongType");
+    node->declare_parameter("topic_name_ping", "Ping");
+    node->declare_parameter("topic_name_pong", "Pong");
     node->declare_parameter("qos_profile_ping",
       "BuiltinQosLibExp::Generic.StrictReliable.LargeData");
     node->declare_parameter("qos_profile_pong",
@@ -59,8 +59,6 @@ struct PingPongTesterOptions
   template<typename N>
   static PingPongTesterOptions load(N * const node, const bool log_result = true)
   {
-    declare(node);
-
     PingPongTesterOptions opts;
     node->get_parameter("domain_id", opts.domain_id);
     node->get_parameter("max_samples", opts.max_samples);
@@ -85,18 +83,18 @@ struct PingPongTesterOptions
   // Helper function to log test options to stdout.
   template<typename N>
   static void log(N * const node, const PingPongTesterOptions & opts) {
-    RCLCPP_INFO(node->get_logger(), "[options] "
-      "domain_id=%d, "
-      "max_samples=%lu, "
-      "max_execution_time=%lfs, "
-      "ignored_initial_samples=%lu, "
-      "print_interval=%lfs, "
-      "type_name='%s', "
-      "topic_name_ping='%s', "
-      "topic_name_pong='%s', "
-      "qos_profile_ping='%s', "
-      "qos_profile_pong='%s', "
-      "display_received=%d",
+    RCLCPP_INFO(node->get_logger(), "test options:\n"
+      "\tdomain_id = %d\n"
+      "\tmax_samples = %lu\n"
+      "\tmax_execution_time = %lfs\n"
+      "\tignored_initial_samples = %lu\n"
+      "\tprint_interval = %lfs\n"
+      "\ttype_name = '%s'\n"
+      "\ttopic_name_ping = '%s'\n"
+      "\ttopic_name_pong = '%s'\n"
+      "\tqos_profile_ping = '%s'\n"
+      "\tqos_profile_pong = '%s'\n"
+      "\tdisplay_received = %d",
       opts.domain_id,
       opts.max_samples,
       static_cast<double>(opts.max_execution_time) / 1000000.0,
@@ -120,26 +118,27 @@ protected:
     const char * const name,
     const rclcpp::NodeOptions & options,
     const bool ping)
-  : Node(name, options)
+  : Node(name, options),
+    ping_(ping)
   {
     // We use ROS 2 parameters to allow customization of test parameters, e.g.
     // via a YAML parameter file with `--ros-args --params-file <file>`.
-    test_options_ = PingPongTesterOptions::load(this);
-
-    // Initialize test based on role.
-    init_test(ping);
+    PingPongTesterOptions::declare(this);
   }
 
   // Initialize DDS entities used by the tester. Each operation is delegated to
   // a virtual function, so that subclasses may override each step as needed.
-  virtual void init_test(const bool ping)
+  virtual void init_test()
   {
+    // Load test configuration from ROS 2 parameters
+    test_options_ = PingPongTesterOptions::load(this);
+
     const std::string * writer_topic,
                       * writer_profile,
                       * reader_topic,
                       * reader_profile;
 
-    if (ping) {
+    if (ping_) {
       writer_topic = &test_options_.topic_name_ping;
       writer_profile = &test_options_.qos_profile_ping;
       reader_topic = &test_options_.topic_name_pong;
@@ -519,6 +518,7 @@ protected:
     }
   }
 
+  const bool ping_;
   PingPongTesterOptions test_options_;
   bool test_active_{false};
   bool test_complete_{false};

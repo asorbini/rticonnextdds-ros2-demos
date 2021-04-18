@@ -134,7 +134,7 @@ transfer method. Similarly, a Flat-Data/Zero-Copy endpoint may communicate with 
 Zero-Copy endpoint, but the different memory representations will prevent
 some optimizations from being enabled.
 
-These examples are based on, and they are compatible with, the
+These examples are based on the
 [`flat_data_latency`](https://github.com/rticommunity/rticonnextdds-examples/tree/master/examples/connext_dds/flat_data_latency/)
 example from the [rticommunity/rticonnextdds-examples](https://github.com/rticommunity/rticonnextdds-examples)
 repository.

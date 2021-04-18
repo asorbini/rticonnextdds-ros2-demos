@@ -24,13 +24,7 @@ public:
     const char * const name,
     const rclcpp::NodeOptions & options)
   : PingPongTester<T, A>(name, options, true /* ping */)
-  {
-    // Start timer to periodically check exit conditions
-    this->start_exit_timer();
-    
-    RCLCPP_INFO(this->get_logger(),
-      "ping-pong publisher ready, waiting for subscriber...");
-  }
+  {}
 
 protected:
   // Helper function to fill in the contents of a sample
@@ -40,6 +34,17 @@ protected:
   virtual void process_pong(
     dds::sub::LoanedSamples<T> & pong_samples,
     uint64_t & pong_timestamp) = 0;
+  
+  virtual void init_test()
+  {
+    PingPongTester<T, A>::init_test();
+
+    // Start timer to periodically check exit conditions
+    this->start_exit_timer();
+    
+    RCLCPP_INFO(this->get_logger(),
+      "ping-pong publisher ready, waiting for subscriber...");
+  }
 
   // Overload `test_start()` to initialize test state and send an initial ping.
   virtual void test_start()
