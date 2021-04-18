@@ -14,9 +14,9 @@
 ################################################################################
 function(connext_generate_typesupport_library lib)
   cmake_parse_arguments(_tslib
-    "ZEROCOPY" # boolean arguments
+    "ZEROCOPY;SERVER" # boolean arguments
     "INSTALL_PREFIX" # single value arguments
-    "MESSAGES;SERVICES;DEPENDS;IDLS" # multi-value arguments
+    "MESSAGES;SERVICES;DEPENDS;IDLS;INCLUDES" # multi-value arguments
     ${ARGN} # current function arguments
     )
   
@@ -38,6 +38,10 @@ function(connext_generate_typesupport_library lib)
 
   set(_tslib_OUTPUT_DIR  "${CMAKE_CURRENT_BINARY_DIR}/rtiddsgen/${lib}")
 
+  if(_tslib_SERVER)
+    set(_tslib_SERVER_OPT SERVER)
+  endif()
+
   # Generate type supports for all types
   set(_tslib_GENERATED_FILES)
   foreach(_msg ${_tslib_MESSAGES})
@@ -48,10 +52,11 @@ function(connext_generate_typesupport_library lib)
     
     connext_generate_message_typesupport_cpp(${_msg_name}
       PACKAGE ${_msg_pkg}
-      INCLUDES ${_msg_includes}
+      INCLUDES ${_msg_includes} ${_tslib_INCLUDES}
       OUTPUT_DIR ${_tslib_OUTPUT_DIR}
       INSTALL_PREFIX ${_tslib_INSTALL_PREFIX}
-      DEPENDS ${_tslib_DEPENDS})
+      DEPENDS ${_tslib_DEPENDS}
+      ${_tslib_SERVER_OPT})
     list(APPEND _tslib_GENERATED_FILES ${${_msg_pkg}_${_msg_name}_FILES})
   endforeach()
 
@@ -89,10 +94,11 @@ function(connext_generate_typesupport_library lib)
 
     connext_generate_message_typesupport_cpp(${_idl_PATH}
       PACKAGE ${_idl_PREFIX}
-      INCLUDES ${_idl_includes}
+      INCLUDES ${_idl_includes} ${_tslib_INCLUDES}
       OUTPUT_DIR ${_tslib_OUTPUT_DIR}
       INSTALL_PREFIX ${_tslib_INSTALL_PREFIX}
-      DEPENDS ${_tslib_DEPENDS})
+      DEPENDS ${_tslib_DEPENDS}
+      ${_tslib_SERVER_OPT})
     
     if(NOT "${_idl_PREFIX}" STREQUAL "")
       string(REPLACE "/" "_" _idl_prefix "${_idl_PREFIX}")

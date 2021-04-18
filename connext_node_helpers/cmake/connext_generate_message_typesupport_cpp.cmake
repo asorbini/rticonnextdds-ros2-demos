@@ -14,7 +14,7 @@
 ################################################################################
 function(connext_generate_message_typesupport_cpp type)
   cmake_parse_arguments(_idl
-    "" # boolean arguments
+    "SERVER" # boolean arguments
     "PACKAGE;OUTPUT_DIR;INSTALL_PREFIX" # single value arguments
     "INCLUDES;DEPENDS" # multi-value arguments
     ${ARGN} # current function arguments
@@ -50,9 +50,16 @@ macro(_connext_generate_message_typesupport_cpp_impl)
 
   file(MAKE_DIRECTORY "${_idl_OUTPUT_DIR}/${_idl_NS}")
 
+
+  if(_idl_SERVER)
+    set(rtiddsgen "rtiddsgen_server")
+  else()
+    set(rtiddsgen "rtiddsgen")
+  endif()
+
   set(_idl_CMD)
   list(APPEND _idl_CMD
-    "${CONNEXTDDS_DIR}/bin/rtiddsgen"
+    "${CONNEXTDDS_DIR}/bin/${rtiddsgen}"
     "-language"
     "C++11"
     "-d" "${_idl_OUTPUT_DIR}/${_idl_NS}"
