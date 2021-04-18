@@ -134,8 +134,9 @@ Zero-Copy. Similarly, a Flat-Data/Zero-Copy endpoint may communicate with a
 Zero-Copy endpoint using plain memory representation, but samples will require
 to be copied into the receivers cache in order to enable interoperability.
 
-These examples can also be run with RMW implementations other than `rmw_connextdds`,
-in which case they will create a dedicated DomainParticipant using RTI Connext DDS.
+These examples are based on and compatible with the [`flat_data_latency`](https://github.com/rticommunity/rticonnextdds-examples/tree/master/examples/connext_dds/flat_data_latency/)
+example from the [rticommunity/rticonnextdds-examples](https://github.com/rticommunity/rticonnextdds-examples)
+repository.
 
 | Example | Description |
 |---------|-------------|
