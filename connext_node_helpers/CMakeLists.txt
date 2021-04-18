@@ -33,8 +33,13 @@ elseif("${RTICONNEXTDDS_VERSION}" VERSION_LESS_EQUAL "6.0.0")
 endif()
 
 add_library(${PROJECT_NAME} SHARED
-  src/processor/processor.cpp
-  include/connext_node_helpers/processor.hpp)
+  src/lib.cpp
+  include/rti/ros2/processor/processor.hpp
+  include/rti/ros2/data/access.hpp
+  include/rti/ros2/data/memory.hpp
+  include/rti/ros2/ping/tester.hpp
+  include/rti/ros2/ping/publisher.hpp
+  include/rti/ros2/ping/subscriber.hpp)
 ament_target_dependencies(${PROJECT_NAME}
   rclcpp)
 ament_export_dependencies(

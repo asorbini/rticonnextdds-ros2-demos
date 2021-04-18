@@ -8,7 +8,9 @@
 // not be liable for any incidental or consequential damages arising out of the
 // use or inability to use the software.
 
-#include "CameraImagePublisher.hpp"
+#include "connext_nodes/visibility_control.h"
+
+#include "connext_nodes/camera/CameraImagePublisher.hpp"
 
 #include "camera/CameraImageFlat.hpp"
 

@@ -11,21 +11,22 @@
 #ifndef CameraImagePublisher_hpp_
 #define CameraImagePublisher_hpp_
 
-#include "PingPongPublisher.hpp"
+#include <rti/ros2/ping/publisher.hpp>
 
-#include "DataAccess.hpp"
+#include <rti/ros2/data/access.hpp>
+
+#include "camera/CameraCommon.hpp"
 
 namespace rti { namespace connext_nodes_cpp {
 
 template<typename T, typename A, typename M>
-class CameraImagePublisher : public PingPongPublisher<T, A>
+class CameraImagePublisher : public rti::ros2::ping::PingPongPublisher<T, A>
 {
 public:
-  CONNEXT_NODES_CPP_PUBLIC
   CameraImagePublisher(
     const char * const name,
     const rclcpp::NodeOptions & options)
-  : PingPongPublisher<T, A>(name, options)
+  : rti::ros2::ping::PingPongPublisher<T, A>(name, options)
   {
     this->init_test();
   }
@@ -63,19 +64,19 @@ protected:
 
 template<typename T>
 using BaseCameraImagePublisherPlain =
-  CameraImagePublisher<T, DataMemoryDynamic<T>, DataAccessPlain<T>>;
+  CameraImagePublisher<T, rti::ros2::data::DataMemoryDynamic<T>, rti::ros2::data::DataAccessPlain<T>>;
 
 template<typename T>
 using BaseCameraImagePublisherFlat =
-  CameraImagePublisher<T, DataMemoryLoan<T>, DataAccessFlat<T>>;
+  CameraImagePublisher<T, rti::ros2::data::DataMemoryLoan<T>, rti::ros2::data::DataAccessFlat<T>>;
 
 template<typename T>
 using BaseCameraImagePublisherFlatZc =
-  CameraImagePublisher<T, DataMemoryLoan<T>, DataAccessFlat<T>>;
+  CameraImagePublisher<T, rti::ros2::data::DataMemoryLoan<T>, rti::ros2::data::DataAccessFlat<T>>;
 
 template<typename T>
 using BaseCameraImagePublisherZc =
-  CameraImagePublisher<T, DataMemoryLoan<T>, DataAccessPlain<T>>;
+  CameraImagePublisher<T, rti::ros2::data::DataMemoryLoan<T>, rti::ros2::data::DataAccessPlain<T>>;
 
 }  // namespace connext_nodes_cpp
 }  // namespace rti

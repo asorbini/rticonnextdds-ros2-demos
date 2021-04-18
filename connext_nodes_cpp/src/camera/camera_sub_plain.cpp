@@ -8,25 +8,27 @@
 // not be liable for any incidental or consequential damages arising out of the
 // use or inability to use the software.
 
-#include "CameraImageSubscriber.hpp"
+#include "connext_nodes/visibility_control.h"
 
-#include "camera/CameraImageFlatZc.hpp"
+#include "connext_nodes/camera/CameraImageSubscriber.hpp"
+
+#include "camera/CameraImage.hpp"
 
 #include "rclcpp_components/register_node_macro.hpp"
 
 namespace rti { namespace connext_nodes_cpp {
 
-class CameraImageSubscriberFlatZc :
-  public BaseCameraImageSubscriberFlatZc<camera::flat_zc::CameraImage>
+class CameraImageSubscriberPlain :
+  public BaseCameraImageSubscriberPlain<camera::plain::CameraImage>
 {
 public:
   CONNEXT_NODES_CPP_PUBLIC
-  explicit CameraImageSubscriberFlatZc(const rclcpp::NodeOptions & options)
-  : CameraImageSubscriber("camera_sub_flat_zc", options)
+  explicit CameraImageSubscriberPlain(const rclcpp::NodeOptions & options)
+  : CameraImageSubscriber("camera_sub_plain", options)
   {}
 };
 
 }  // namespace connext_nodes_cpp
 }  // namespace rti
 
-RCLCPP_COMPONENTS_REGISTER_NODE(rti::connext_nodes_cpp::CameraImageSubscriberFlatZc)
+RCLCPP_COMPONENTS_REGISTER_NODE(rti::connext_nodes_cpp::CameraImageSubscriberPlain)

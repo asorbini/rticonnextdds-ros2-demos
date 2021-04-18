@@ -8,14 +8,12 @@
 // not be liable for any incidental or consequential damages arising out of the
 // use or inability to use the software.
 
-// Utilities used by CameraImage_publisher.cxx and CameraImage_subscriber.cxx.
-
-#ifndef DataMemory_hpp_
-#define DataMemory_hpp_
+#ifndef CONNEXT_NODE_HELPERS__RTI_ROS2_DATA_MEMORY_HPP
+#define CONNEXT_NODE_HELPERS__RTI_ROS2_DATA_MEMORY_HPP
 
 #include <dds/dds.hpp>
 
-namespace rti { namespace connext_nodes_cpp {
+namespace rti { namespace ros2 { namespace data {
 
 template<typename T>
 class DataMemoryDynamic
@@ -66,7 +64,8 @@ public:
   }
 };
 
-}  // namespace connext_nodes_cpp
+}  // namespace data
+}  // namespace ros2
 }  // namespace rti
 
-#endif  // DataMemory_hpp_
+#endif  // CONNEXT_NODE_HELPERS__RTI_ROS2_DATA_MEMORY_HPP

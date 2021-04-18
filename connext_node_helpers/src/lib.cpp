@@ -8,25 +8,8 @@
 // not be liable for any incidental or consequential damages arising out of the
 // use or inability to use the software.
 
-#include "CameraImagePublisher.hpp"
+#include <stdio.h>
 
-#include "camera/CameraImage.hpp"
-
-#include "rclcpp_components/register_node_macro.hpp"
-
-namespace rti { namespace connext_nodes_cpp {
-
-class CameraImagePublisherPlain :
-  public BaseCameraImagePublisherPlain<camera::plain::CameraImage>
-{
-public:
-  CONNEXT_NODES_CPP_PUBLIC
-  explicit CameraImagePublisherPlain(const rclcpp::NodeOptions & options)
-  : CameraImagePublisher("camera_pub_plain", options)
-  {}
-};
-
-}  // namespace connext_nodes_cpp
-}  // namespace rti
-
-RCLCPP_COMPONENTS_REGISTER_NODE(rti::connext_nodes_cpp::CameraImagePublisherPlain)
+void foo() {
+  printf("Hello library\n");
+}

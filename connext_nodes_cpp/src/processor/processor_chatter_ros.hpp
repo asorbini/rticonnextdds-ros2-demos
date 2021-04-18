@@ -11,7 +11,7 @@
 #ifndef PROCESSOR_CHATTER_ROS_HPP
 #define PROCESSOR_CHATTER_ROS_HPP
 
-#include "connext_node_helpers/processor.hpp"
+#include "rti/ros2/processor/processor.hpp"
 
 #include "processor_chatter.hpp"
 
@@ -23,7 +23,7 @@ namespace rti { namespace connext_nodes_cpp {
  * Traditional ROS 2 Node
  ******************************************************************************/
 class Ros2ChatterProcessorNode :
-  public rti::ros2::Ros2ProcessorNode<std_msgs::msg::String, std_msgs::msg::String>
+  public rti::ros2::processor::Ros2ProcessorNode<std_msgs::msg::String, std_msgs::msg::String>
 {
 public:
   Ros2ChatterProcessorNode()

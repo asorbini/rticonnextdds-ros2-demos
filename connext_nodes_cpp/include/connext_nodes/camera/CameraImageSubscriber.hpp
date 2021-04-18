@@ -11,21 +11,22 @@
 #ifndef CameraImageSubscriber_hpp_
 #define CameraImageSubscriber_hpp_
 
-#include "PingPongSubscriber.hpp"
+#include <rti/ros2/ping/subscriber.hpp>
 
-#include "DataAccess.hpp"
+#include <rti/ros2/data/access.hpp>
+
+#include "camera/CameraCommon.hpp"
 
 namespace rti { namespace connext_nodes_cpp {
 
 template<typename T, typename A, typename M>
-class CameraImageSubscriber : public PingPongSubscriber<T, A>
+class CameraImageSubscriber : public rti::ros2::ping::PingPongSubscriber<T, A>
 {
 public:
-  CONNEXT_NODES_CPP_PUBLIC
   CameraImageSubscriber(
     const char * const name,
     const rclcpp::NodeOptions & options)
-  : PingPongSubscriber<T, A>(name, options)
+  : rti::ros2::ping::PingPongSubscriber<T, A>(name, options)
   {
     this->init_test();
   }
@@ -67,19 +68,19 @@ protected:
 
 template<typename T>
 using BaseCameraImageSubscriberPlain =
-  CameraImageSubscriber<T, DataMemoryDynamic<T>, DataAccessPlain<T>>;
+  CameraImageSubscriber<T, rti::ros2::data::DataMemoryDynamic<T>, rti::ros2::data::DataAccessPlain<T>>;
 
 template<typename T>
 using BaseCameraImageSubscriberFlat =
-  CameraImageSubscriber<T, DataMemoryLoan<T>, DataAccessFlat<T>>;
+  CameraImageSubscriber<T, rti::ros2::data::DataMemoryLoan<T>, rti::ros2::data::DataAccessFlat<T>>;
 
 template<typename T>
 using BaseCameraImageSubscriberFlatZc =
-  CameraImageSubscriber<T, DataMemoryLoan<T>, DataAccessFlat<T>>;
+  CameraImageSubscriber<T, rti::ros2::data::DataMemoryLoan<T>, rti::ros2::data::DataAccessFlat<T>>;
 
 template<typename T>
 using BaseCameraImageSubscriberZc =
-  CameraImageSubscriber<T, DataMemoryLoan<T>, DataAccessPlain<T>>;
+  CameraImageSubscriber<T, rti::ros2::data::DataMemoryLoan<T>, rti::ros2::data::DataAccessPlain<T>>;
 
 }  // namespace connext_nodes_cpp
 }  // namespace rti

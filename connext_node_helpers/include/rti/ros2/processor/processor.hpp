@@ -8,15 +8,16 @@
 // not be liable for any incidental or consequential damages arising out of the
 // use or inability to use the software.
 
-#ifndef CONNEXT_NODE_HELPERS__PROCESSOR_HPP
-#define CONNEXT_NODE_HELPERS__PROCESSOR_HPP
+#ifndef CONNEXT_NODE_HELPERS__RTI_ROS2_PROCESSOR_HPP
+#define CONNEXT_NODE_HELPERS__RTI_ROS2_PROCESSOR_HPP
 
 #include "rclcpp/rclcpp.hpp"
 
 #include <dds/dds.hpp>
+
 #include <rti/core/cond/AsyncWaitSet.hpp>
 
-namespace rti { namespace ros2 {
+namespace rti { namespace ros2 { namespace processor {
 
 template<typename T, typename V>
 class BaseProcessorNode : public rclcpp::Node
@@ -270,9 +271,8 @@ protected:
   typename rclcpp::Publisher<V>::SharedPtr pub_;
 };
 
-void foo();
-
+}  // namespace processor
 }  // namespace ros2
 }  // namespace rti
 
-#endif /* CONNEXT_NODE_HELPERS__PROCESSOR_HPP */
+#endif  // CONNEXT_NODE_HELPERS__RTI_ROS2_PROCESSOR_HPP

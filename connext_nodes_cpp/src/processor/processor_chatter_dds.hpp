@@ -11,7 +11,7 @@
 #ifndef PROCESSOR_CHATTER_DDS_HPP
 #define PROCESSOR_CHATTER_DDS_HPP
 
-#include "connext_node_helpers/processor.hpp"
+#include "rti/ros2/processor/processor.hpp"
 
 #include "processor_chatter.hpp"
 
@@ -23,7 +23,7 @@ namespace rti { namespace connext_nodes_cpp {
  * DDS Node interface
  ******************************************************************************/
 class DdsChatterProcessorNode :
-  public rti::ros2::DdsProcessorNode<std_msgs::msg::String, std_msgs::msg::String>
+  public rti::ros2::processor::DdsProcessorNode<std_msgs::msg::String, std_msgs::msg::String>
 {
 public:
   DdsChatterProcessorNode()

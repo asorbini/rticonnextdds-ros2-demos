@@ -8,18 +8,17 @@
 // not be liable for any incidental or consequential damages arising out of the
 // use or inability to use the software.
 
-#ifndef PingPongPublisher_hpp_
-#define PingPongPublisher_hpp_
+#ifndef CONNEXT_NODE_HELPERS__RTI_ROS2_PING_PUBLISHER_HPP
+#define CONNEXT_NODE_HELPERS__RTI_ROS2_PING_PUBLISHER_HPP
 
-#include "PingPongTester.hpp"
+#include <rti/ros2/ping/tester.hpp>
 
-namespace rti { namespace connext_nodes_cpp {
+namespace rti { namespace ros2 { namespace ping {
 
 template<typename T, typename A>
 class PingPongPublisher : public PingPongTester<T, A>
 {
 public:
-  CONNEXT_NODES_CPP_PUBLIC
   PingPongPublisher(
     const char * const name,
     const rclcpp::NodeOptions & options)
@@ -170,7 +169,8 @@ protected:
   uint64_t ping_ts_ = 0;
 };
 
-}  // namespace connext_nodes_cpp
+}  // namespace ping
+}  // namespace ros2
 }  // namespace rti
 
-#endif  // PingPongPublisher_hpp_
+#endif  // CONNEXT_NODE_HELPERS__RTI_ROS2_PING_PUBLISHER_HPP

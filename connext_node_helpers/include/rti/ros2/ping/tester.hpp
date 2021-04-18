@@ -8,21 +8,20 @@
 // not be liable for any incidental or consequential damages arising out of the
 // use or inability to use the software.
 
-#ifndef PingPongTester_hpp_
-#define PingPongTester_hpp_
+#ifndef CONNEXT_NODE_HELPERS__RTI_ROS2_PING_TESTER_HPP
+#define CONNEXT_NODE_HELPERS__RTI_ROS2_PING_TESTER_HPP
 
 #include <chrono>
 
 #include <dds/dds.hpp>
+
 #include <rti/core/cond/AsyncWaitSet.hpp>
+
+#include <rti/ros2/data/memory.hpp>
 
 #include "rclcpp/rclcpp.hpp"
 
-#include "connext_nodes/visibility_control.h"
-
-#include "DataMemory.hpp"
-
-namespace rti { namespace connext_nodes_cpp {
+namespace rti { namespace ros2 { namespace ping {
 
 struct PingPongTesterOptions
 {
@@ -113,7 +112,6 @@ template<typename T, typename A>
 class PingPongTester : public rclcpp::Node
 {
 protected:
-  CONNEXT_NODES_CPP_PUBLIC
   PingPongTester(
     const char * const name,
     const rclcpp::NodeOptions & options,
@@ -539,7 +537,8 @@ protected:
   rclcpp::TimerBase::SharedPtr exit_timer_;
 };
 
-}  // namespace connext_nodes_cpp
+}  // namespace ping
+}  // namespace ros2
 }  // namespace rti
 
-#endif  // PingPongTester_hpp_
+#endif  // CONNEXT_NODE_HELPERS__RTI_ROS2_PING_TESTER_HPP

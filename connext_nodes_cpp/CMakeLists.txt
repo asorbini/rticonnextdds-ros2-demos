@@ -152,24 +152,20 @@ connext_components_register_node(connext_node_components
 
 # Camera example is built as a component library
 add_library(camera_components SHARED
-  src/camera/components/camera_pub_flat.cpp
-  src/camera/components/camera_pub_flat_zc.cpp
-  src/camera/components/camera_pub_plain.cpp
-  src/camera/components/camera_pub_zc.cpp
-  src/camera/components/camera_sub_flat.cpp
-  src/camera/components/camera_sub_flat_zc.cpp
-  src/camera/components/camera_sub_plain.cpp
-  src/camera/components/camera_sub_zc.cpp
-  src/camera/CameraImagePublisher.hpp
-  src/camera/CameraImageSubscriber.hpp
-  src/camera/DataMemory.hpp
-  src/camera/DataAccess.hpp
-  src/camera/PingPongPublisher.hpp
-  src/camera/PingPongSubscriber.hpp
-  src/camera/PingPongTester.hpp)
+  src/camera/camera_pub_flat.cpp
+  src/camera/camera_pub_flat_zc.cpp
+  src/camera/camera_pub_plain.cpp
+  src/camera/camera_pub_zc.cpp
+  src/camera/camera_sub_flat.cpp
+  src/camera/camera_sub_flat_zc.cpp
+  src/camera/camera_sub_plain.cpp
+  src/camera/camera_sub_zc.cpp
+  include/connext_nodes/camera/CameraImagePublisher.hpp
+  include/connext_nodes/camera/CameraImageSubscriber.hpp)
 ament_target_dependencies(camera_components
   rclcpp
-  rclcpp_components)
+  rclcpp_components
+  connext_node_helpers)
 target_compile_definitions(camera_components
   PRIVATE "CONNEXT_NODES_CPP_BUILDING_DLL")
 target_include_directories(camera_components
