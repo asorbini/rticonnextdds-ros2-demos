@@ -113,6 +113,8 @@ use the `_main` suffix to differentiate it from the "component-ized" version.
 
 ### camera
 
+[Source code](connext_nodes_cpp/src/camera)
+
 This example demonstrates the benefits of *Zero Copy Transfer over Shared Memory*
 (Zero-Copy), and *FlatData Language Binding* (Flat-Data) features provided by
 RTI Connext DDS.
@@ -186,6 +188,8 @@ ros2 run connext_nodes_cpp camera_sub_flat_zc
 
 ### processor_chatter
 
+[Source code](connext_nodes_cpp/src/processor)
+
 This example uses the interfaces offered by [connext_nodes/processor.hpp](connext_node_helpers/include/connext_nodes/processor.hpp)
 to implement a simple "processor" node for topic `"chatter"`. A "processor" in this context
 is a type of node which consumes messages from topic an input topic,
@@ -220,6 +224,8 @@ ros2 run connext_nodes_cpp talker
 ```
 
 ### talker/listener
+
+[Source code](connext_nodes_cpp/src/chatter)
 
 These examples mimic the `talker` and `listener` applications included in package
 `demo_nodes_cpp`, but they use the RTI Connext DDS C++11 API to create DDS endpoint

@@ -81,14 +81,14 @@ connext_generate_message_typesupport_cpp(String
 connext_add_executable(
   NAME talker_main
   SOURCES
-    src/standalone/talker_main.cpp
+    src/chatter/talker_main.cpp
     ${std_msgs_String_FILES}
   INCLUDES
     ${CMAKE_CURRENT_BINARY_DIR}/rtiddsgen/chatter)
 connext_add_executable(
   NAME listener_main
   SOURCES
-    src/standalone/listener_main.cpp
+    src/chatter/listener_main.cpp
     ${std_msgs_String_FILES}
   INCLUDES
     ${CMAKE_CURRENT_BINARY_DIR}/rtiddsgen/chatter)
