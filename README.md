@@ -113,28 +113,29 @@ use the `_main` suffix to differentiate it from the "component-ized" version.
 
 ### camera
 
-This set of examples demonstrate the effects of using the Flat-Data and Zero-Copy
-fetures provided by RTI Connext DDS.
+This example demonstrates the benefits of *Zero Copy Transfer over Shared Memory*
+(Zero-Copy), and *FlatData Language Binding* (Flat-Data) features provided by
+RTI Connext DDS.
 
 The examples perform a simple latency test between a publisher and a subscriber
-applications. After starting the applications, the publisher will send a large
-timestamped message to the subscriber, and wait for it to be echoed back to
-calculate roundtrip latency. The roundtrip time is then halved and a running
-average will be printed periodically.
+applications using large data samples exchanged in a "ping/pong" fashion.
+The computed roundtrip time is halved and a running average will be printed
+periodically while the test is being performed.
 
 The testers applications are provided in different variants, each one using a
 different memory binding (plain, or Flat-Data), and a different transfer method
-(default, or Zero-Copy). Each version can communicate with the others,
+(default, or Zero-Copy). Each version can communicate with all the others,
 regardless of enabled features, but the resulting performance will depend on
-runtime negotiation of available features.
+runtime negotiation, and compatibility of available features.
 
 For example, a Zero-Copy subscriber will be able to receive samples from a
-regular writer, but communication will not be able to take advantage of
-Zero-Copy. Similarly, a Flat-Data/Zero-Copy endpoint may communicate with a
-Zero-Copy endpoint using plain memory representation, but samples will require
-to be copied into the receivers cache in order to enable interoperability.
+non Zero-Copy writer, but communication will be carried out using the default
+transfer method. Similarly, a Flat-Data/Zero-Copy endpoint may communicate with a
+Zero-Copy endpoint, but the different memory representations will prevent
+some optimizations from being enabled.
 
-These examples are based on and compatible with the [`flat_data_latency`](https://github.com/rticommunity/rticonnextdds-examples/tree/master/examples/connext_dds/flat_data_latency/)
+These examples are based on, and they are compatible with, the
+[`flat_data_latency`](https://github.com/rticommunity/rticonnextdds-examples/tree/master/examples/connext_dds/flat_data_latency/)
 example from the [rticommunity/rticonnextdds-examples](https://github.com/rticommunity/rticonnextdds-examples)
 repository.
 
