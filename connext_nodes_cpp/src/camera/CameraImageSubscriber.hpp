@@ -11,69 +11,52 @@
 #ifndef CameraImageSubscriber_hpp_
 #define CameraImageSubscriber_hpp_
 
-#include "PingPongTester.hpp"
+#include "PingPongSubscriber.hpp"
 
 #include "CameraImageManipulator.hpp"
 
 namespace rti { namespace connext_nodes_cpp {
 
 template<typename T, typename M, typename A>
-class CameraImageSubscriber : public PingPongTester<T, A>
+class CameraImageSubscriber : public PingPongSubscriber<T, A>
 {
 public:
   CONNEXT_NODES_CPP_PUBLIC
   CameraImageSubscriber(
     const char * const name,
     const rclcpp::NodeOptions & options)
-  : PingPongTester<T, A>(name, options, false /* pong */)
-  {
-    RCLCPP_INFO(this->get_logger(),
-      "camera subscriber ready, waiting for publisher...");
-  }
+  : PingPongSubscriber<T, A>(name, options)
+  {}
 
 protected:
-  // Overload `on_data_available()` to propagate ping sample to the pong topic.
-  virtual void on_data_available()
+  virtual void prepare_pong(T * const pong, const uint64_t ping_ts)
   {
-    // Read pong sample and calculate latency
-    auto ping_samples = this->reader_.take();
+    M::timestamp(*pong, ping_ts);
+  }
 
-    const bool has_data = ping_samples.length() > 0;
-    if (has_data && ping_samples[0].info().valid()) {
-      auto sample = ping_samples[0];
-      auto ping_ts = M::timestamp(sample.data());
+  virtual void process_ping(
+    dds::sub::LoanedSamples<T> & ping_samples,
+    uint64_t & pong_timestamp)
+  {
+    pong_timestamp = M::timestamp(ping_samples[0].data());
+  }
 
-      if (ping_ts == 0) {
-        RCLCPP_INFO(this->get_logger(), "received end ping, exiting");
-        this->shutdown();
-        return;
-      }
+  virtual void dump_ping(
+    dds::sub::LoanedSamples<T> & ping_samples,
+    std::ostringstream & msg)
+  {
+    auto sample = ping_samples[0];
 
-      if (this->test_options_.display_received) {
-        std::ostringstream msg;
-        msg << "[CameraImage] " <<
-          "[" << M::timestamp(sample.data()) << "] " << 
-          "" << M::format(sample.data());
+    msg << "[" << M::timestamp(sample.data()) << "] " << 
+      "" << M::format(sample.data());
 
-        for (int i = 0; i < 4; i++) {
-            msg << "0x" << 
-              std::hex << std::uppercase <<
-              std::setfill('0') << std::setw(2) <<
-              (int) M::data(sample.data(), i) <<
-              std::nouppercase << std::dec <<
-              " ";
-        }
-
-        RCLCPP_INFO(this->get_logger(), msg.str().c_str());
-      }
-
-      // Send back the timestamp to the writer.
-      auto pong = this->alloc_sample();
-      M::timestamp(*pong, ping_ts);
-      this->writer_.write(*pong);
-    } else if (has_data && !ping_samples[0].info().valid()) {
-      RCLCPP_ERROR(this->get_logger(), "lost pong writer before end of test");
-      this->shutdown();
+    for (int i = 0; i < 4; i++) {
+        msg << "0x" << 
+          std::hex << std::uppercase <<
+          std::setfill('0') << std::setw(2) <<
+          (int) M::data(sample.data(), i) <<
+          std::nouppercase << std::dec <<
+          " ";
     }
   }
 };

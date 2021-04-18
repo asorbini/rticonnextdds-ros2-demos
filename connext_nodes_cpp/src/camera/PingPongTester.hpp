@@ -41,19 +41,6 @@ struct PingPongTesterOptions
   template<typename N>
   static void declare(N * const node)
   {
-    // node->declare_parameter<int32_t>("domain_id", 0);
-    // node->declare_parameter<int64_t>("max_samples", 1000ULL);
-    // node->declare_parameter<int64_t>("max_execution_time", 30000000ULL /* 30s */);
-    // node->declare_parameter<int64_t>("ignored_initial_samples", 3ULL);
-    // node->declare_parameter<int64_t>("print_interval", 1000000ULL /* 1s */);
-    // node->declare_parameter<std::string>("type_name", "CameraImage");
-    // node->declare_parameter<std::string>("topic_name_ping", "CameraImagePing");
-    // node->declare_parameter<std::string>("topic_name_pong", "CameraImagePong");
-    // node->declare_parameter<std::string>("qos_profile_ping",
-    //   "BuiltinQosLibExp::Generic.StrictReliable.LargeData");
-    // node->declare_parameter<std::string>("qos_profile_pong",
-    //   "BuiltinQosLibExp::Generic.StrictReliable.LargeData");
-    // node->declare_parameter<bool>("display_received", true);
     node->declare_parameter("domain_id", 0);
     node->declare_parameter("max_samples", 1000);
     node->declare_parameter("max_execution_time", 30000000 /* 30s */);
@@ -141,14 +128,6 @@ protected:
 
     // Initialize test based on role.
     init_test(ping);
-  }
-
-  virtual ~PingPongTester()
-  {
-    // stop waitset thread pool if created
-    if (nullptr != awaitset_) {
-      awaitset_->stop();
-    }
   }
 
   // Initialize DDS entities used by the tester. Each operation is delegated to

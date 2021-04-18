@@ -164,6 +164,7 @@ add_library(camera_components SHARED
   src/camera/CameraImagePublisher.hpp
   src/camera/CameraImageSubscriber.hpp
   src/camera/DataAllocator.hpp
+  src/camera/PingPongPublisher.hpp
   src/camera/PingPongTester.hpp)
 ament_target_dependencies(camera_components
   rclcpp
