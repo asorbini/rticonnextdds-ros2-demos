@@ -61,7 +61,7 @@ template <typename CameraImageType>
 void populate_flat_sample(CameraImageType &sample, int count)
 {
     auto image = sample.root();
-    image.format(rti::camera::common::Format::RGB);
+    image.format(rti::camera::common::format::RGB);
     image.resolution().height(4320);
     image.resolution().width(7680);
 
@@ -77,7 +77,7 @@ void populate_flat_sample(CameraImageType &sample, int count)
 template <typename CameraImageType>
 void populate_plain_sample(CameraImageType &sample, int count)
 {
-    sample.format(rti::camera::common::Format::RGB);
+    sample.format(rti::camera::common::format::RGB);
     sample.resolution().height(4320);
     sample.resolution().width(7680);
 

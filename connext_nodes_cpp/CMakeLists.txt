@@ -132,6 +132,8 @@ connext_components_register_node(connext_node_components
 ################################################################################
 # Build applications based on standard IDL files
 ################################################################################
+# Load ROS 2 equivalent messages
+find_package(connext_node_msgs REQUIRED)
 
 # Camera example is built as a component library
 add_library(camera_components SHARED
@@ -143,18 +145,23 @@ add_library(camera_components SHARED
   src/camera/camera_sub_flat_zc.cpp
   src/camera/camera_sub_plain.cpp
   src/camera/camera_sub_zc.cpp
+  src/camera/camera_sub_ros.cpp
+  src/camera/camera_pub_ros.cpp
   include/connext_nodes/camera/CameraImagePublisher.hpp
   include/connext_nodes/camera/CameraImageSubscriber.hpp)
 ament_target_dependencies(camera_components
   rclcpp
   rclcpp_components
+  connext_node_msgs
   connext_node_helpers)
 target_compile_definitions(camera_components
   PRIVATE "CONNEXT_NODES_CPP_BUILDING_DLL")
 target_include_directories(camera_components
   PRIVATE
     ${CMAKE_CURRENT_BINARY_DIR}/rtiddsgen
-    ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_cpp>)
 target_link_libraries(camera_components
   connext_nodes_cpp_types
   RTIConnextDDS::cpp2_api)
@@ -196,6 +203,14 @@ connext_components_register_node(camera_components
 connext_components_register_node(camera_components
   PLUGIN "rti::connext_nodes_cpp::camera::CameraImageSubscriberZc"
   EXECUTABLE camera_sub_zc)
+
+connext_components_register_node(camera_components
+  PLUGIN "rti::connext_nodes_cpp::camera::CameraImageSubscriberRos"
+  EXECUTABLE camera_sub_ros)
+
+connext_components_register_node(camera_components
+  PLUGIN "rti::connext_nodes_cpp::camera::CameraImagePublisherRos"
+  EXECUTABLE camera_pub_ros)
 
 # Build equivalent DDS-only applications
 connext_add_executable(
