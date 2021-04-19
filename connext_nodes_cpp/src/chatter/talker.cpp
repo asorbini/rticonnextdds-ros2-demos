@@ -65,7 +65,6 @@ public:
     auto participant = dds::domain::find(0);
     assert(null != participant);
     // Create a DataWriter for topic "rt/chatter"
-    assert(null != participant);
     dds::pub::Publisher publisher(participant);
     dds::topic::Topic<std_msgs::msg::String> topic(participant,
       "rt/chatter", "std_msgs::msg::dds_::String_");

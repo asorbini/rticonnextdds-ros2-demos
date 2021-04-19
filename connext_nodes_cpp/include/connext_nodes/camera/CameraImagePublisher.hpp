@@ -38,7 +38,7 @@ protected:
       M::get(ping).timestamp(0);
       return;
     }
-    
+
     M::get(ping).format(rti::camera::common::Format::RGB);
     M::get(ping).resolution().height(rti::camera::common::CAMERA_HEIGHT_DEFAULT);
     M::get(ping).resolution().width(rti::camera::common::CAMERA_WIDTH_DEFAULT);
