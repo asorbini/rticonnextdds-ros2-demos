@@ -11,7 +11,7 @@
 #ifndef CameraImageSubscriber_hpp_
 #define CameraImageSubscriber_hpp_
 
-#include <rti/ros2/ping/subscriber_ros.hpp>
+#include <rti/ros2/ping/ros_subscriber.hpp>
 
 #include "connext_node_msgs/msg/camera_common.hpp"
 #include "connext_node_msgs/msg/resolution.hpp"

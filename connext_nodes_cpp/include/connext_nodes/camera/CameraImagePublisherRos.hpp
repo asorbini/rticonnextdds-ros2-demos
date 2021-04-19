@@ -11,7 +11,7 @@
 #ifndef CameraImagePublisherRos_hpp_
 #define CameraImagePublisherRos_hpp_
 
-#include <rti/ros2/ping/publisher_ros.hpp>
+#include <rti/ros2/ping/ros_publisher.hpp>
 
 #include "connext_node_msgs/msg/camera_common.hpp"
 #include "connext_node_msgs/msg/resolution.hpp"
