@@ -27,7 +27,7 @@ module zc {
     @allowed_data_representation(XCDR2)
     struct CameraImage {
         int64 timestamp;
-        common::Format format;
+        int32 format;
         Resolution resolution;
         octet data[common::IMAGE_SIZE];
     };

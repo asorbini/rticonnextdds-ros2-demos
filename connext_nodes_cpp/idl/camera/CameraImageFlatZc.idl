@@ -19,7 +19,7 @@ module flat_zc {
     @language_binding(FLAT_DATA)
     struct CameraImage {
         int64 timestamp;
-        common::Format format;
+        int32 format;
         common_flat::Resolution resolution;
         octet data[common::IMAGE_SIZE];
     };

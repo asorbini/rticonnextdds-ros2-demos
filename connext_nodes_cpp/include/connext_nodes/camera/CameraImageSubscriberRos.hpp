@@ -34,11 +34,6 @@ protected:
     connext_node_msgs::msg::CameraImage & pong, const uint64_t ping_ts)
   {
     pong.timestamp = ping_ts;
-    if (pong.data.size() < connext_node_msgs::msg::CameraCommon::IMAGE_SIZE)
-    {
-      pong.data.resize(connext_node_msgs::msg::CameraCommon::IMAGE_SIZE);
-      std::fill(pong.data.begin(), pong.data.end(), 0);
-    }
   }
 
   virtual void process_ping(

@@ -44,11 +44,6 @@ protected:
     ping.resolution.height = CameraCommon::CAMERA_HEIGHT_DEFAULT;
     ping.resolution.width = CameraCommon::CAMERA_WIDTH_DEFAULT;
 
-    if (ping.data.size() < connext_node_msgs::msg::CameraCommon::IMAGE_SIZE)
-    {
-      ping.data.resize(connext_node_msgs::msg::CameraCommon::IMAGE_SIZE);
-      std::fill(ping.data.begin(), ping.data.end(), 0);
-    }
     for (int i = 0; i < 4; i++) {
       uint8_t image_value = (48 + this->count_) % 124;
       ping.data[i] = image_value;
