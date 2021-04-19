@@ -14,7 +14,7 @@
 
 void publisher_flat_zero_copy(const ApplicationOptions &options)
 {
-    using namespace rti::camera::flat;
+    using namespace rti::camera::flat_zc;
     using namespace rti::core::policy;
     using namespace dds::core::policy;
 
