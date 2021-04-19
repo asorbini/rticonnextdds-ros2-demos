@@ -93,23 +93,6 @@ connext_add_executable(
   INCLUDES
     ${CMAKE_CURRENT_BINARY_DIR}/rtiddsgen/chatter)
 
-connext_add_executable(
-  NAME processor_chatter_ros
-  SOURCES
-    src/processor/processor_chatter.hpp
-    src/processor/processor_chatter.cpp
-    src/processor/processor_chatter_ros.hpp
-  LIBRARIES connext_nodes_cpp_types
-  DEFINES USE_DDS=0)
-connext_add_executable(
-  NAME processor_chatter_dds
-  SOURCES
-    src/processor/processor_chatter.hpp
-    src/processor/processor_chatter.cpp
-    src/processor/processor_chatter_dds.hpp
-  LIBRARIES connext_nodes_cpp_types
-  DEFINES USE_DDS=1)
-
 ################################################################################
 # Create a library for the "component" Nodes
 ################################################################################

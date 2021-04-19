@@ -8,7 +8,6 @@ RTI Connext DDS APIs.
 - [Included examples](#included-examples)
   - [talker/listener](#talkerlistener)
   - [camera](#camera)
-  - [processor_chatter](#processor_chatter)
 - [Other useful resources](#other-useful-resources)
 
 ## Build repository
@@ -216,43 +215,6 @@ ros2 run connext_nodes_cpp camera_sub_zc
 ros2 run connext_nodes_cpp camera_pub_flat_zc
 
 ros2 run connext_nodes_cpp camera_sub_flat_zc
-```
-
-### processor_chatter
-
-[Source code](connext_nodes_cpp/src/processor)
-
-This example uses the interfaces offered by [connext_nodes/processor.hpp](connext_node_helpers/include/connext_nodes/processor.hpp)
-to implement a simple "processor" node for topic `"chatter"`. A "processor" in this context
-is a type of node which consumes messages from topic an input topic,
-manipulates them, and redistributes the results over an output topic.
-
-The message processing logic is implemented in a "middleware-agnostic" fashion,
-so that it may be encapsulated in a class which doesn't directly depend on neither
-the ROS 2 nor the RTI Connext DDS APIs (except for their respective data bindings).
-Thanks to the available node templates, two executables are built from the same
-`main()`: one which runs a DDS-based version of the node (implemented by deriving
-from template class `rti::ros2::DdsProcessorNode`), and one which uses
-"classic" ROS 2 APIs (implemented by deriving from template class `rti::ros2::RosProcessorNode`).
-
-| Example | Description   |
-|---------|---------------|
-|[processor_chatter_dds.hpp](connext_nodes_cpp/src/processor/processor_chatter_dds.hpp)|Instantiation of `rti::ros2::DdsProcessorNode<std_msgs::msg::String, std_msgs::msg::String>` for topics `"chatter"`/`"chatter/processed"`.|
-|[processor_chatter_ros.hpp](connext_nodes_cpp/src/processor/processor_chatter_ros.hpp)|Instantiation of `rti::ros2::RosProcessorNode<std_msgs::msg::String, std_msgs::msg::String>` for topics `"chatter"`/`"chatter/processed"`.|
-|[processor_chatter.hpp](connext_nodes_cpp/src/processor/processor_chatter.hpp)|Middleware-agnostic message processing logic.|
-|[processor_chatter.cpp](connext_nodes_cpp/src/processor/processor_chatter.cpp)|`main()` entry point for the generated executables.|
-
-*Example usage:*
-
-```sh
-# Use rtiddsspy to print processed samples
-rtiddspy -printSample
-
-# Start a talker on topic "rt/chatter"
-ros2 run connext_nodes_cpp talker
-
-# Process samples using the DDS-based version
-./install/connext_nodes_cpp/bin/processor_chatter_dds
 ```
 
 ## Other useful resources
