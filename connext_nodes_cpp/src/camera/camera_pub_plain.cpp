@@ -16,10 +16,10 @@
 
 #include "rclcpp_components/register_node_macro.hpp"
 
-namespace rti { namespace connext_nodes_cpp {
+namespace rti { namespace connext_nodes_cpp { namespace camera {
 
 class CameraImagePublisherPlain :
-  public BaseCameraImagePublisherPlain<camera::plain::CameraImage>
+  public BaseCameraImagePublisherPlain<rti::camera::plain::CameraImage>
 {
 public:
   CONNEXT_NODES_CPP_PUBLIC
@@ -28,7 +28,8 @@ public:
   {}
 };
 
+}  // namespace camera
 }  // namespace connext_nodes_cpp
 }  // namespace rti
 
-RCLCPP_COMPONENTS_REGISTER_NODE(rti::connext_nodes_cpp::CameraImagePublisherPlain)
+RCLCPP_COMPONENTS_REGISTER_NODE(rti::connext_nodes_cpp::camera::CameraImagePublisherPlain)

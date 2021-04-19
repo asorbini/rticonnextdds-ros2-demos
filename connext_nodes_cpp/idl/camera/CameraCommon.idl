@@ -8,8 +8,7 @@
 // not be liable for any incidental or consequential damages arising out of the
 // use or inability to use the software.
 
-
-// Types common to all CameraImage definitions
+module rti {
 module camera {
 module common {
     const int32 IMAGE_SIZE = 8294400 * 3;
@@ -24,3 +23,4 @@ module common {
     };
 };  // module common
 };  // module camera
+};  // module rti

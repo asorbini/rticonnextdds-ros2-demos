@@ -112,10 +112,34 @@ transfer method. Similarly, a Flat-Data/Zero-Copy endpoint may communicate with 
 Zero-Copy endpoint, but the different memory representations will prevent
 some optimizations from being enabled.
 
+The applications are based on some helper classes from the `connext_node_helpers`
+package. These classes are implemented as generics in order to allow them to be
+used with any DDS type. The tests derive from the templates, and use C++
+meta-programming to make the code independent of data binding and transfer
+methods. See:
+
+- [`rti::ros2::ping::PingPongPublisher`](https://github.com/asorbini/rticonnextdds-ros2-helpers/blob/master/connext_node_helpers/include/rti/ros2/ping/publisher.hpp)
+- [`rti::ros2::ping::PingPongSubscriber`](https://github.com/asorbini/rticonnextdds-ros2-helpers/blob/master/connext_node_helpers/include/rti/ros2/ping/subscriber.hpp)
+- [`rti::ros2::ping::PingPongTester`](https://github.com/asorbini/rticonnextdds-ros2-helpers/blob/master/connext_node_helpers/include/rti/ros2/ping/tester.hpp)  
+- [`rti::connext_nodes_cpp::camera::CameraImagePublisher](connext_nodes_cpp/include/connext_nodes/camera/CameraImagePublisher.hpp)
+- [`rti::connext_nodes_cpp::camera::CameraImageSubscriber](connext_nodes_cpp/include/connext_nodes/camera/CameraImageSubscriber.hpp)
+- [`rti/ros2/data/access.hpp`](https://github.com/asorbini/rticonnextdds-ros2-helpers/blob/master/connext_node_helpers/include/rti/ros2/data/access.hpp)
+- [`rti/ros2/data/memory.hpp`](https://github.com/asorbini/rticonnextdds-ros2-helpers/blob/master/connext_node_helpers/include/rti/ros2/data/memory.hpp)
+
 These examples are based on the
 [`flat_data_latency`](https://github.com/rticommunity/rticonnextdds-examples/tree/master/examples/connext_dds/flat_data_latency/)
 example from the [rticommunity/rticonnextdds-examples](https://github.com/rticommunity/rticonnextdds-examples)
 repository.
+
+Equivalent applications that can be used to test interoperability with the
+ROS 2 equivalents are include under [`connext_nodes_cpp/src/camera/dds`](connext_nodes_cpp/src/camera/dds).
+These applications are built into one publisher and one subscriber applications,
+with all transfer modes available in one process and selectable via command
+line options.
+
+Contrary to example `flat_data_latency`, these application use topics `"rt/ping"`,
+and `"rt/pong"`, and register the topic type as `PingMessage`. Additionally, they
+have been modified to use transient local durability.
 
 | Example | Description |
 |---------|-------------|
@@ -127,6 +151,8 @@ repository.
 |[camera_sub_flat.cpp](connext_nodes_cpp/src/camera/camera_sub_flat.cpp) | Subscriber using Flat-Data memory representation, and default transport |
 |[camera_sub_flat_zc.cpp](connext_nodes_cpp/src/camera/camera_sub_flat_zc.cpp) | Subscriber using Flat-Data memory representation, and Zero-Copy transport |
 |[camera_sub_zc.cpp](connext_nodes_cpp/src/camera/camera_sub_zc.cpp) | Subscriber using plain memory representation, and Zero-Copy transport |
+|[dds_camera_pub_main.cpp](connext_nodes_cpp/src/camera/dds/dds_camera_pub_main.cpp) | Ported version of the publisher application from the `flat_data_latency` example.|
+|[dds_camera_sub_main.cpp](connext_nodes_cpp/src/camera/dds/dds_camera_sub_main.cpp) | Ported version of the subscriber application from the `flat_data_latency` example.|
 
 *Example usage:*
 

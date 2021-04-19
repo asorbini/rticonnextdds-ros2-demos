@@ -183,36 +183,66 @@ install(TARGETS
   RUNTIME DESTINATION bin)
 
 connext_components_register_node(camera_components
-  PLUGIN "rti::connext_nodes_cpp::CameraImagePublisherPlain"
+  PLUGIN "rti::connext_nodes_cpp::camera::CameraImagePublisherPlain"
   EXECUTABLE camera_pub_plain)
 
 connext_components_register_node(camera_components
-  PLUGIN "rti::connext_nodes_cpp::CameraImagePublisherFlat"
+  PLUGIN "rti::connext_nodes_cpp::camera::CameraImagePublisherFlat"
   EXECUTABLE camera_pub_flat)
 
 connext_components_register_node(camera_components
-  PLUGIN "rti::connext_nodes_cpp::CameraImagePublisherFlatZc"
+  PLUGIN "rti::connext_nodes_cpp::camera::CameraImagePublisherFlatZc"
   EXECUTABLE camera_pub_flat_zc)
 
 connext_components_register_node(camera_components
-  PLUGIN "rti::connext_nodes_cpp::CameraImagePublisherZc"
+  PLUGIN "rti::connext_nodes_cpp::camera::CameraImagePublisherZc"
   EXECUTABLE camera_pub_zc)
 
 connext_components_register_node(camera_components
-  PLUGIN "rti::connext_nodes_cpp::CameraImageSubscriberPlain"
+  PLUGIN "rti::connext_nodes_cpp::camera::CameraImageSubscriberPlain"
   EXECUTABLE camera_sub_plain)
 
 connext_components_register_node(camera_components
-  PLUGIN "rti::connext_nodes_cpp::CameraImageSubscriberFlat"
+  PLUGIN "rti::connext_nodes_cpp::camera::CameraImageSubscriberFlat"
   EXECUTABLE camera_sub_flat)
 
 connext_components_register_node(camera_components
-  PLUGIN "rti::connext_nodes_cpp::CameraImageSubscriberFlatZc"
+  PLUGIN "rti::connext_nodes_cpp::camera::CameraImageSubscriberFlatZc"
   EXECUTABLE camera_sub_flat_zc)
 
 connext_components_register_node(camera_components
-  PLUGIN "rti::connext_nodes_cpp::CameraImageSubscriberZc"
+  PLUGIN "rti::connext_nodes_cpp::camera::CameraImageSubscriberZc"
   EXECUTABLE camera_sub_zc)
+
+# Build equivalent DDS-only applications
+connext_add_executable(
+  NAME dds_camera_pub
+  SOURCES
+    src/camera/dds/dds_camera_common.hpp
+    src/camera/dds/dds_camera_pub_main.cpp
+    src/camera/dds/dds_camera_pub.hpp
+    src/camera/dds/dds_camera_pub_plain.cpp
+    src/camera/dds/dds_camera_pub_flat.cpp
+    src/camera/dds/dds_camera_pub_flat_zc.cpp
+    src/camera/dds/dds_camera_pub_zc.cpp
+  LIBRARIES
+    connext_nodes_cpp_types
+  STANDALONE)
+
+connext_add_executable(
+  NAME dds_camera_sub
+  SOURCES
+    src/camera/dds/dds_camera_common.hpp
+    src/camera/dds/dds_camera_sub_main.cpp
+    src/camera/dds/dds_camera_sub.hpp
+    src/camera/dds/dds_camera_sub_plain.cpp
+    src/camera/dds/dds_camera_sub_flat.cpp
+    src/camera/dds/dds_camera_sub_flat_zc.cpp
+    src/camera/dds/dds_camera_sub_zc.cpp
+  LIBRARIES
+    connext_nodes_cpp_types
+  STANDALONE)
+
 ################################################################################
 # Register ROS 2 package
 ################################################################################

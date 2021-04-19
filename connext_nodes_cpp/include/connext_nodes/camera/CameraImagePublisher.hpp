@@ -17,7 +17,7 @@
 
 #include "camera/CameraCommon.hpp"
 
-namespace rti { namespace connext_nodes_cpp {
+namespace rti { namespace connext_nodes_cpp { namespace camera {
 
 template<typename T, typename A, typename M>
 class CameraImagePublisher : public rti::ros2::ping::PingPongPublisher<T, A>
@@ -39,9 +39,9 @@ protected:
       return;
     }
     
-    M::get(ping).format(camera::common::Format::RGB);
-    M::get(ping).resolution().height(camera::common::CAMERA_HEIGHT_DEFAULT);
-    M::get(ping).resolution().width(camera::common::CAMERA_WIDTH_DEFAULT);
+    M::get(ping).format(rti::camera::common::Format::RGB);
+    M::get(ping).resolution().height(rti::camera::common::CAMERA_HEIGHT_DEFAULT);
+    M::get(ping).resolution().width(rti::camera::common::CAMERA_WIDTH_DEFAULT);
     
     // Just set the first 4 bytes
     for (int i = 0; i < 4; i++) {
@@ -78,6 +78,7 @@ template<typename T>
 using BaseCameraImagePublisherZc =
   CameraImagePublisher<T, rti::ros2::data::DataMemoryLoan<T>, rti::ros2::data::DataAccessPlain<T>>;
 
+}  // namespace camera
 }  // namespace connext_nodes_cpp
 }  // namespace rti
 

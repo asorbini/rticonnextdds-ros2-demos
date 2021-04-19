@@ -11,6 +11,7 @@
 #include "camera/CameraCommon.idl"
 
 // CameraImage without flat-data or zero-copy
+module rti {
 module camera {
 module plain {
     @final
@@ -29,5 +30,6 @@ module plain {
         Resolution resolution;
         octet data[common::IMAGE_SIZE];
     };
-};
+};  // module plain
 };  // module camera
+};  // module rti

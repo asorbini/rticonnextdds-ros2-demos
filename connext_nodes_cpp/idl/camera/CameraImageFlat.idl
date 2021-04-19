@@ -11,6 +11,7 @@
 #include "camera/CameraCommonFlat.idl"
 
 // CameraImage using flat-data
+module rti {
 module camera {
 module flat {
     @final
@@ -23,3 +24,4 @@ module flat {
     };
 };  // module flat_data
 };  // module camera
+};  // module rti

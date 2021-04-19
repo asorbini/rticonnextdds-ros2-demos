@@ -17,7 +17,7 @@
 
 #include "camera/CameraCommon.hpp"
 
-namespace rti { namespace connext_nodes_cpp {
+namespace rti { namespace connext_nodes_cpp { namespace camera {
 
 template<typename T, typename A, typename M>
 class CameraImageSubscriber : public rti::ros2::ping::PingPongSubscriber<T, A>
@@ -82,6 +82,7 @@ template<typename T>
 using BaseCameraImageSubscriberZc =
   CameraImageSubscriber<T, rti::ros2::data::DataMemoryLoan<T>, rti::ros2::data::DataAccessPlain<T>>;
 
+}  // namespace camera
 }  // namespace connext_nodes_cpp
 }  // namespace rti
 

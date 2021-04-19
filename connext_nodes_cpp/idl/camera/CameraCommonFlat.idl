@@ -10,7 +10,7 @@
 
 #include "camera/CameraCommon.idl"
 
-// Types common to flat_zero_copy::CameraImage and flat_data::CameraImage
+module rti {
 module camera {
 module common_flat {
     @final
@@ -21,3 +21,4 @@ module common_flat {
     };
 };  // module common_flat
 };  // module camera
+};  // module rti
