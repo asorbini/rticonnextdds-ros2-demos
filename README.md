@@ -6,9 +6,9 @@ RTI Connext DDS APIs.
 - [Build repository](#build-repository)
 - [Run examples](#run-examples)
 - [Included examples](#included-examples)
+  - [talker/listener](#talkerlistener)
   - [camera](#camera)
   - [processor_chatter](#processor_chatter)
-  - [talker/listener](#talkerlistener)
 - [Other useful resources](#other-useful-resources)
 
 ## Build repository
@@ -86,6 +86,34 @@ This package contains several example ROS 2/Connext hybrid applications.
 Most examples are available both as a stand-alone executable and as an `rclcpp`
 component. When built as a stand-alone executable, the generated binary will
 use the `_main` suffix to differentiate it from the "component-ized" version.
+
+### talker/listener
+
+[Source code](connext_nodes_cpp/src/chatter)
+
+These examples mimic the `talker` and `listener` applications included in package
+`demo_nodes_cpp`, but they use the RTI Connext DDS C++11 API to create DDS endpoint
+that can interoperate over the ROS 2 topic `"chatter"`.
+
+The endpoints are created reusing the type definition of `std_msgs::msg::String``
+automatically converted from ROS IDL to OMG IDL by the ROS 2 build process.
+
+| Example | Description   |
+|---------|---------------|
+|[talker.cpp](connext_nodes_cpp/src/chatter/talker.cpp)| Connext-based version of [demo_nodes_cpp/src/topics/talker.cpp](https://github.com/ros2/demos/blob/master/demo_nodes_cpp/src/topics/talker.cpp)|
+|[listener.cpp](connext_nodes_cpp/src/chatter/listener.cpp)| Connext-based version of [demo_nodes_cpp/src/topics/listener.cpp](https://github.com/ros2/demos/blob/master/demo_nodes_cpp/src/topics/listener.cpp)|
+|[talker_main.cpp](connext_nodes_cpp/src/standalone/talker_main.cpp)| Stand-alone version of [talker.cpp](connext_nodes_cpp/src/chatter/talker.cpp)|
+|[listener_main.cpp](connext_nodes_cpp/src/standalone/listener_main.cpp)| Stand-alone version of [listener.cpp](connext_nodes_cpp/src/chatter/listener.cpp)|
+
+*Example usage:*
+
+```sh
+# Start a DDS talker on topic "chatter"
+ros2 run connext_nodes_cpp talker
+
+# Consume data with a ROS 2 listener
+ros2 run demo_nodes_cpp listener
+```
 
 ### camera
 
@@ -225,34 +253,6 @@ ros2 run connext_nodes_cpp talker
 
 # Process samples using the DDS-based version
 ./install/connext_nodes_cpp/bin/processor_chatter_dds
-```
-
-### talker/listener
-
-[Source code](connext_nodes_cpp/src/chatter)
-
-These examples mimic the `talker` and `listener` applications included in package
-`demo_nodes_cpp`, but they use the RTI Connext DDS C++11 API to create DDS endpoint
-that can interoperate over the ROS 2 topic `"chatter"`.
-
-The endpoints are created reusing the type definition of `std_msgs::msg::String``
-automatically converted from ROS IDL to OMG IDL by the ROS 2 build process.
-
-| Example | Description   |
-|---------|---------------|
-|[talker.cpp](connext_nodes_cpp/src/chatter/talker.cpp)| Connext-based version of [demo_nodes_cpp/src/topics/talker.cpp](https://github.com/ros2/demos/blob/master/demo_nodes_cpp/src/topics/talker.cpp)|
-|[listener.cpp](connext_nodes_cpp/src/chatter/listener.cpp)| Connext-based version of [demo_nodes_cpp/src/topics/listener.cpp](https://github.com/ros2/demos/blob/master/demo_nodes_cpp/src/topics/listener.cpp)|
-|[talker_main.cpp](connext_nodes_cpp/src/standalone/talker_main.cpp)| Stand-alone version of [talker.cpp](connext_nodes_cpp/src/chatter/talker.cpp)|
-|[listener_main.cpp](connext_nodes_cpp/src/standalone/listener_main.cpp)| Stand-alone version of [listener.cpp](connext_nodes_cpp/src/chatter/listener.cpp)|
-
-*Example usage:*
-
-```sh
-# Start a DDS talker on topic "chatter"
-ros2 run connext_nodes_cpp talker
-
-# Consume data with a ROS 2 listener
-ros2 run demo_nodes_cpp listener
 ```
 
 ## Other useful resources
