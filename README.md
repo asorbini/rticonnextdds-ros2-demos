@@ -118,13 +118,15 @@ used with any DDS type. The tests derive from the templates, and use C++
 meta-programming to make the code independent of data binding and transfer
 methods. See:
 
-- [`rti::ros2::ping::PingPongPublisher`](https://github.com/asorbini/rticonnextdds-ros2-helpers/blob/master/connext_node_helpers/include/rti/ros2/ping/publisher.hpp)
-- [`rti::ros2::ping::PingPongSubscriber`](https://github.com/asorbini/rticonnextdds-ros2-helpers/blob/master/connext_node_helpers/include/rti/ros2/ping/subscriber.hpp)
-- [`rti::ros2::ping::PingPongTester`](https://github.com/asorbini/rticonnextdds-ros2-helpers/blob/master/connext_node_helpers/include/rti/ros2/ping/tester.hpp)  
-- [`rti::connext_nodes_cpp::camera::CameraImagePublisher`](connext_nodes_cpp/include/connext_nodes/camera/CameraImagePublisher.hpp)
-- [`rti::connext_nodes_cpp::camera::CameraImageSubscriber`](connext_nodes_cpp/include/connext_nodes/camera/CameraImageSubscriber.hpp)
-- [`rti/ros2/data/access.hpp`](https://github.com/asorbini/rticonnextdds-ros2-helpers/blob/master/connext_node_helpers/include/rti/ros2/data/access.hpp)
-- [`rti/ros2/data/memory.hpp`](https://github.com/asorbini/rticonnextdds-ros2-helpers/blob/master/connext_node_helpers/include/rti/ros2/data/memory.hpp)
+- `connext_node_helpers`
+  - [`rti::ros2::ping::PingPongPublisher`](https://github.com/asorbini/rticonnextdds-ros2-helpers/blob/master/connext_node_helpers/include/rti/ros2/ping/publisher.hpp)
+  - [`rti::ros2::ping::PingPongSubscriber`](https://github.com/asorbini/rticonnextdds-ros2-helpers/blob/master/connext_node_helpers/include/rti/ros2/ping/subscriber.hpp)
+  - [`rti::ros2::ping::PingPongTester`](https://github.com/asorbini/rticonnextdds-ros2-helpers/blob/master/connext_node_helpers/include/rti/ros2/ping/tester.hpp)  
+  - [`rti/ros2/data/access.hpp`](https://github.com/asorbini/rticonnextdds-ros2-helpers/blob/master/connext_node_helpers/include/rti/ros2/data/access.hpp)
+  - [`rti/ros2/data/memory.hpp`](https://github.com/asorbini/rticonnextdds-ros2-helpers/blob/master/connext_node_helpers/include/rti/ros2/data/memory.hpp)
+- `connext_nodes_cpp`
+  - [`rti::connes_cpp::camera::CameraImagePublisher`](connext_nodes_cpp/include/connext_nodes/camera/CameraImagePublisher.hpp)
+  - [`rti::connext_nodes_cpp::camera::CameraImageSubscriber`](connext_nodes_cpp/include/connext_nodes/camera/CameraImageSubscriber.hpp)
 
 These examples are based on the
 [`flat_data_latency`](https://github.com/rticommunity/rticonnextdds-examples/tree/master/examples/connext_dds/flat_data_latency/)
