@@ -121,8 +121,8 @@ methods. See:
 - [`rti::ros2::ping::PingPongPublisher`](https://github.com/asorbini/rticonnextdds-ros2-helpers/blob/master/connext_node_helpers/include/rti/ros2/ping/publisher.hpp)
 - [`rti::ros2::ping::PingPongSubscriber`](https://github.com/asorbini/rticonnextdds-ros2-helpers/blob/master/connext_node_helpers/include/rti/ros2/ping/subscriber.hpp)
 - [`rti::ros2::ping::PingPongTester`](https://github.com/asorbini/rticonnextdds-ros2-helpers/blob/master/connext_node_helpers/include/rti/ros2/ping/tester.hpp)  
-- [`rti::connext_nodes_cpp::camera::CameraImagePublisher](connext_nodes_cpp/include/connext_nodes/camera/CameraImagePublisher.hpp)
-- [`rti::connext_nodes_cpp::camera::CameraImageSubscriber](connext_nodes_cpp/include/connext_nodes/camera/CameraImageSubscriber.hpp)
+- [`rti::connext_nodes_cpp::camera::CameraImagePublisher`](connext_nodes_cpp/include/connext_nodes/camera/CameraImagePublisher.hpp)
+- [`rti::connext_nodes_cpp::camera::CameraImageSubscriber`](connext_nodes_cpp/include/connext_nodes/camera/CameraImageSubscriber.hpp)
 - [`rti/ros2/data/access.hpp`](https://github.com/asorbini/rticonnextdds-ros2-helpers/blob/master/connext_node_helpers/include/rti/ros2/data/access.hpp)
 - [`rti/ros2/data/memory.hpp`](https://github.com/asorbini/rticonnextdds-ros2-helpers/blob/master/connext_node_helpers/include/rti/ros2/data/memory.hpp)
 
