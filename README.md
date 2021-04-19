@@ -1,4 +1,4 @@
-# ROS2 applications built with RTI Connext DDS
+# ROS 2 applications built with RTI Connext DDS
 
 This repository contains a collection of  ROS 2 applications built using the
 RTI Connext DDS APIs.
