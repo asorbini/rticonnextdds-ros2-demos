@@ -16,19 +16,11 @@ module common {
     const int32 CAMERA_HEIGHT_DEFAULT = 4320;
     const int32 CAMERA_TIMEOUT_DEFAULT = 10; //milliseconds
 
-    // Ideally we would use an enum, but ROS 2 doesn't support it,
-    // so we use a typedef and some constants instead.
-    // enum Format {
-    //     RGB,
-    //     HSV,
-    //     YUV
-    // };
-    typedef int32 Format;
-    module format {
-      const int32 RGB = 0;
-      const int32 HSV = 1;
-      const int32 YUV = 2;
-    }; // module format
+    enum Format {
+        RGB,
+        HSV,
+        YUV
+    };
 };  // module common
 };  // module camera
 };  // module rti
