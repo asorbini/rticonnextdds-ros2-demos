@@ -125,7 +125,7 @@ methods. See:
   - [`rti/ros2/data/access.hpp`](https://github.com/asorbini/rticonnextdds-ros2-helpers/blob/master/connext_node_helpers/include/rti/ros2/data/access.hpp)
   - [`rti/ros2/data/memory.hpp`](https://github.com/asorbini/rticonnextdds-ros2-helpers/blob/master/connext_node_helpers/include/rti/ros2/data/memory.hpp)
 - From `connext_nodes_cpp`:
-  - [`rti::connes_cpp::camera::CameraImagePublisher`](connext_nodes_cpp/include/connext_nodes/camera/CameraImagePublisher.hpp)
+  - [`rti::connext_nodes_cpp::camera::CameraImagePublisher`](connext_nodes_cpp/include/connext_nodes/camera/CameraImagePublisher.hpp)
   - [`rti::connext_nodes_cpp::camera::CameraImageSubscriber`](connext_nodes_cpp/include/connext_nodes/camera/CameraImageSubscriber.hpp)
 
 These examples are based on the
