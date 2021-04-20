@@ -10,22 +10,61 @@
 
 #include "connext_nodes/visibility_control.h"
 
-#include "connext_nodes/camera/CameraImagePublisher.hpp"
+#include "rti/ros2/ping/publisher.hpp"
 
 #include "camera/CameraImageZc.hpp"
 
 #include "rclcpp_components/register_node_macro.hpp"
 
+using namespace rti::camera::zc;
+
 namespace rti { namespace connext_nodes_cpp { namespace camera {
 
 class CameraImagePublisherZc :
-  public BaseCameraImagePublisherZc<rti::camera::zc::CameraImage>
+  public rti::ros2::ping::PingPongPublisher<CameraImage>
 {
 public:
   CONNEXT_NODES_CPP_PUBLIC
   explicit CameraImagePublisherZc(const rclcpp::NodeOptions & options)
-  : CameraImagePublisher("camera_pub_zc", options)
-  {}
+  : PingPongPublisher("camera_pub_zc", options)
+  {
+    this->init_test();
+  }
+
+protected:
+  virtual CameraImage * alloc_sample()
+  {
+    return writer_.extensions().get_loan();
+  }
+
+  virtual void prepare_ping(CameraImage & sample, const bool final)
+  {
+    if (final) {
+      sample.timestamp(0);
+      return;
+    }
+
+    sample.format(rti::camera::common::Format::RGB);
+    sample.resolution().height(rti::camera::common::CAMERA_HEIGHT_DEFAULT);
+    sample.resolution().width(rti::camera::common::CAMERA_WIDTH_DEFAULT);
+    
+    // Just set the first 4 bytes
+    for (int i = 0; i < 4; i++) {
+      uint8_t image_value = (48 + this->count_) % 124;
+      sample.data()[i] = image_value;
+    }
+    
+    // Update timestamp
+    sample.timestamp(this->ts_now());
+  }
+
+  // Process received pong sample and return the timestamp
+  virtual void process_pong(
+    dds::sub::LoanedSamples<CameraImage> & pong_samples,
+    uint64_t & pong_timestamp)
+  {
+    pong_timestamp = pong_samples[0].data().timestamp();
+  }
 };
 
 }  // namespace camera

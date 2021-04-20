@@ -13,25 +13,41 @@
 
 #include <rti/ros2/ping/subscriber.hpp>
 
-#include <rti/ros2/data/access.hpp>
-
 #include "camera/CameraCommon.hpp"
 
 namespace rti { namespace connext_nodes_cpp { namespace camera {
 
-template<typename T, typename A, typename M>
-class CameraImageSubscriber : public rti::ros2::ping::PingPongSubscriber<T, A>
+// This is a generic implementation of the CameraImageSubscriber classes, which
+// can be instantiated independently of transfer method and memory binding
+// through the use of metaprogramming.
+template<typename T>
+class CameraImageSubscriber : public rti::ros2::ping::PingPongSubscriber<T>
 {
 public:
   CameraImageSubscriber(
     const char * const name,
     const rclcpp::NodeOptions & options)
-  : rti::ros2::ping::PingPongSubscriber<T, A>(name, options)
+  : rti::ros2::ping::PingPongSubscriber<T>(name, options)
   {
     this->init_test();
   }
 
 protected:
+  virtual dds::pub::DataWriter<T> create_writer(
+    const char * const type_name,
+    const char * const topic_name,
+    const char * const qos_profile)
+  {
+    auto writer = rti::ros2::ping::PingPongSubscriber<T>::create_writer(
+      type_name, topic_name, qos_profile);
+    cached_sample_ = A::prealloc(writer);
+    return writer;
+  }
+
+  virtual T * alloc_sample() {
+    return A::alloc(writer_, cached_sample_);
+  };
+
   virtual void prepare_pong(T * const pong, const uint64_t ping_ts)
   {
     M::get(*pong).timestamp(ping_ts);
@@ -64,23 +80,9 @@ protected:
           " ";
     }
   }
+
+  CameraImage * cached_sample_;
 };
-
-template<typename T>
-using BaseCameraImageSubscriberPlain =
-  CameraImageSubscriber<T, rti::ros2::data::DataMemoryDynamic<T>, rti::ros2::data::DataAccessPlain<T>>;
-
-template<typename T>
-using BaseCameraImageSubscriberFlat =
-  CameraImageSubscriber<T, rti::ros2::data::DataMemoryLoan<T>, rti::ros2::data::DataAccessFlat<T>>;
-
-template<typename T>
-using BaseCameraImageSubscriberFlatZc =
-  CameraImageSubscriber<T, rti::ros2::data::DataMemoryLoan<T>, rti::ros2::data::DataAccessFlat<T>>;
-
-template<typename T>
-using BaseCameraImageSubscriberZc =
-  CameraImageSubscriber<T, rti::ros2::data::DataMemoryLoan<T>, rti::ros2::data::DataAccessPlain<T>>;
 
 }  // namespace camera
 }  // namespace connext_nodes_cpp

@@ -10,22 +10,62 @@
 
 #include "connext_nodes/visibility_control.h"
 
-#include "connext_nodes/camera/CameraImageSubscriber.hpp"
+#include "rti/ros2/ping/subscriber.hpp"
 
 #include "camera/CameraImageFlat.hpp"
 
 #include "rclcpp_components/register_node_macro.hpp"
 
+using namespace rti::camera::flat;
+
 namespace rti { namespace connext_nodes_cpp { namespace camera {
 
 class CameraImageSubscriberFlat :
-  public BaseCameraImageSubscriberFlat<rti::camera::flat::CameraImage>
+  public rti::ros2::ping::PingPongSubscriber<CameraImage>
 {
 public:
   CONNEXT_NODES_CPP_PUBLIC
   explicit CameraImageSubscriberFlat(const rclcpp::NodeOptions & options)
-  : CameraImageSubscriber("camera_sub_flat", options)
-  {}
+  : PingPongSubscriber("camera_sub_flat", options)
+  {
+    this->init_test();
+  }
+
+protected:
+  virtual CameraImage * alloc_sample()
+  {
+    return writer_.extensions().get_loan();
+  }
+
+  virtual void prepare_pong(CameraImage * const pong, const uint64_t ping_ts)
+  {
+    pong->root().timestamp(ping_ts);
+  }
+
+  virtual void process_ping(
+    dds::sub::LoanedSamples<CameraImage> & ping_samples,
+    uint64_t & ping_timestamp)
+  {
+    ping_timestamp = ping_samples[0].data().root().timestamp();
+  }
+
+  virtual void dump_ping(
+    dds::sub::LoanedSamples<CameraImage> & ping_samples,
+    std::ostringstream & msg)
+  {
+    auto sample = ping_samples[0].data().root();
+
+    msg << "[" << sample.timestamp() << "] " <<  sample.format();
+
+    for (int i = 0; i < 4; i++) {
+        msg << "0x" << 
+          std::hex << std::uppercase <<
+          std::setfill('0') << std::setw(2) <<
+          (int) sample.data().get_elements()[i] <<
+          std::nouppercase << std::dec <<
+          " ";
+    }
+  }
 };
 
 }  // namespace camera
